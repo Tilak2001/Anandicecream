@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anand Ice Cream</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <span class="logo-icon">🍦</span>
+                <span>Anand Ice Cream</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <a href="cart.html" class="cart-icon">
+                🛒
+                <span class="cart-count" id="cartCount">0</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="content">
+        <h1>🍨 Welcome to Anand Ice Cream 🍨</h1>
+        <p>Discover the sweetest, creamiest ice cream in town! Handcrafted with love and the finest ingredients.</p>
+    </div>
+
+    <!-- Carousel Section -->
+    <div class="carousel-container">
+        <button class="carousel-nav prev" onclick="moveSlide(-1)">❮</button>
+        <button class="carousel-nav next" onclick="moveSlide(1)">❯</button>
+
+        <div class="carousel-wrapper" id="carouselWrapper">
+            <!-- Slide 1: Cone, Gadbad, Cup -->
+            <div class="carousel-slide">
+                <h2 class="slide-title">🍦 Classic Favorites 🍦</h2>
+                <div class="products-grid">
+                    <div class="product-card">
+                        <div class="product-icon">🍦</div>
+                        <div class="product-name">Ice Cream Cone</div>
+                        <div class="product-desc">Crispy waffle cone filled with your favorite flavors</div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-icon">🍨</div>
+                        <div class="product-name">Gadbad</div>
+                        <div class="product-desc">Layers of ice cream, fruits, nuts & jelly - a delightful mix!</div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-icon">🥤</div>
+                        <div class="product-name">Cup Ice Cream</div>
+                        <div class="product-desc">Smooth & creamy ice cream served in a convenient cup</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2: Kulfi, Softi, Family Pack -->
+            <div class="carousel-slide">
+                <h2 class="slide-title">🎉 Special Treats 🎉</h2>
+                <div class="products-grid">
+                    <div class="product-card">
+                        <div class="product-icon">🍡</div>
+                        <div class="product-name">Kulfi</div>
+                        <div class="product-desc">Traditional Indian frozen dessert with rich flavors</div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-icon">🍦</div>
+                        <div class="product-name">Softi</div>
+                        <div class="product-desc">Soft serve ice cream - smooth, creamy & delicious</div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-icon">📦</div>
+                        <div class="product-name">Family Pack</div>
+                        <div class="product-desc">Large tubs perfect for sharing with loved ones</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Carousel Dots -->
+        <div class="carousel-dots">
+            <span class="dot active" onclick="goToSlide(0)"></span>
+            <span class="dot" onclick="goToSlide(1)"></span>
+        </div>
+    </div>
+
+    <!-- Product Cards Section -->
+    <section class="products-section">
+        <h2 class="section-title">🍦 Our Ice Cream Collection 🍦</h2>
+        <div class="cards-grid">
+            <!-- Card 1: Kulfi -->
+            <div class="ice-cream-card">
+                <div class="card-image kulfi">🍡</div>
+                <div class="card-content">
+                    <div class="card-title">Kulfi</div>
+                    <div class="card-description">Traditional Indian frozen dessert with authentic flavors of cardamom,
+                        saffron & pistachios</div>
+                </div>
+            </div>
+
+            <!-- Card 2: Cup -->
+            <div class="ice-cream-card">
+                <div class="card-image cup">🥤</div>
+                <div class="card-content">
+                    <div class="card-title">Cup Ice Cream</div>
+                    <div class="card-description">Creamy ice cream served in convenient cups - perfect for on-the-go
+                        enjoyment</div>
+                </div>
+            </div>
+
+            <!-- Card 3: Chocbar -->
+            <div class="ice-cream-card">
+                <div class="card-image chocbar">🍫</div>
+                <div class="card-content">
+                    <div class="card-title">Chocbar</div>
+                    <div class="card-description">Rich chocolate coated ice cream bar - a chocolate lover's dream come
+                        true</div>
+                </div>
+            </div>
+
+            <!-- Card 4: Dolly -->
+            <div class="ice-cream-card">
+                <div class="card-image dolly">🍭</div>
+                <div class="card-content">
+                    <div class="card-title">Dolly</div>
+                    <div class="card-description">Colorful ice lolly with fruity flavors - a refreshing treat for all
+                        ages</div>
+                </div>
+            </div>
+
+            <!-- Card 5: Cone -->
+            <div class="ice-cream-card">
+                <div class="card-image cone">🍦</div>
+                <div class="card-content">
+                    <div class="card-title">Cone</div>
+                    <div class="card-description">Classic crispy waffle cone filled with premium ice cream flavors</div>
+                </div>
+            </div>
+
+            <!-- Card 6: Gadbad -->
+            <div class="ice-cream-card">
+                <div class="card-image gadbad">🍨</div>
+                <div class="card-content">
+                    <div class="card-title">Gadbad</div>
+                    <div class="card-description">Spectacular layers of ice cream, fruits, nuts, jelly & dry fruits - a
+                        complete dessert experience</div>
+                </div>
+            </div>
+
+            <!-- Card 7: Scoop -->
+            <div class="ice-cream-card">
+                <div class="card-image scoop">🍧</div>
+                <div class="card-content">
+                    <div class="card-title">Scoop</div>
+                    <div class="card-description">Hand-scooped premium ice cream with endless flavor combinations</div>
+                </div>
+            </div>
+
+            <!-- Card 8: Family Cup -->
+            <div class="ice-cream-card">
+                <div class="card-image family">📦</div>
+                <div class="card-content">
+                    <div class="card-title">Family Cup</div>
+                    <div class="card-description">Large family-sized tubs perfect for sharing special moments with loved
+                        ones</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Kulfi Product Page Modal -->
+    <div class="product-modal" id="kulfiModal">
+        <div class="product-page">
+            <button class="close-btn" onclick="closeProductPage()">×</button>
+
+            <div class="product-header">
+                <div class="product-icon-large">🍡</div>
+                <h1 class="product-title-large">Kulfi</h1>
+            </div>
+
+            <div class="product-body">
+                <!-- Flavor Selection -->
+                <div class="option-section">
+                    <label class="option-label">Choose Your Flavor</label>
+                    <div class="flavor-grid">
+                        <div class="flavor-option selected" onclick="selectFlavor(this, 'Badam')">
+                            <div class="flavor-emoji">🌰</div>
+                            <div class="flavor-name">Badam</div>
+                        </div>
+                        <div class="flavor-option" onclick="selectFlavor(this, 'Mava')">
+                            <div class="flavor-emoji">🥛</div>
+                            <div class="flavor-name">Mava</div>
+                        </div>
+                        <div class="flavor-option" onclick="selectFlavor(this, 'Guava')">
+                            <div class="flavor-emoji">🍈</div>
+                            <div class="flavor-name">Guava</div>
+                        </div>
+                        <div class="flavor-option" onclick="selectFlavor(this, 'Gulkand')">
+                            <div class="flavor-emoji">🌹</div>
+                            <div class="flavor-name">Gulkand</div>
+                        </div>
+                        <div class="flavor-option" onclick="selectFlavor(this, 'Rabdi')">
+                            <div class="flavor-emoji">🍯</div>
+                            <div class="flavor-name">Rabdi</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Size Selection -->
+                <div class="option-section">
+                    <label class="option-label">Select Size</label>
+                    <div class="size-options">
+                        <div class="size-option selected" onclick="selectSize(this, 'Small', 20)">
+                            <div class="size-name">Small</div>
+                            <div class="size-price">₹20</div>
+                        </div>
+                        <div class="size-option" onclick="selectSize(this, 'Medium', 40)">
+                            <div class="size-name">Medium</div>
+                            <div class="size-price">₹40</div>
+                        </div>
+                        <div class="size-option" onclick="selectSize(this, 'Large', 50)">
+                            <div class="size-name">Large</div>
+                            <div class="size-price">₹50</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Price Display -->
+                <div class="price-display">
+                    <div class="price-label">Total Price</div>
+                    <div class="price-amount" id="totalPrice">₹20</div>
+                </div>
+
+                <!-- Add to Cart Button -->
+                <button class="add-to-cart-btn" onclick="addToCart()">
+                    🛒 Add to Cart
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="cart.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
