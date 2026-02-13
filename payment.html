@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Anand Ice Cream</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Payment Page Specific Styles */
+        .payment-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .payment-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .payment-header h1 {
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .payment-card {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .order-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .order-summary h2 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            font-size: 1.1rem;
+        }
+
+        .summary-row.total {
+            border-top: 2px solid rgba(255, 255, 255, 0.3);
+            margin-top: 0.5rem;
+            padding-top: 1rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .qr-section {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .qr-section h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .qr-code-container {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 15px;
+            display: inline-block;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .qr-code-container img {
+            max-width: 300px;
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .payment-instructions {
+            background: #fff5f8;
+            border-left: 4px solid #ff6b9d;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+        }
+
+        .payment-instructions h4 {
+            color: #ff6b9d;
+            margin-bottom: 1rem;
+        }
+
+        .payment-instructions ol {
+            margin-left: 1.5rem;
+            color: #666;
+        }
+
+        .payment-instructions li {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .upload-section {
+            margin: 2rem 0;
+        }
+
+        .upload-section h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .file-upload-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .file-upload-input:hover {
+            border-color: #ff6b9d;
+            background: #fff5f8;
+        }
+
+        .file-upload-label {
+            display: block;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .file-upload-label:hover {
+            color: #ff6b9d;
+        }
+
+        .file-name {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #e8f5e9;
+            border-radius: 8px;
+            color: #2e7d32;
+            display: none;
+        }
+
+        .preview-image {
+            max-width: 300px;
+            margin-top: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .payment-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .back-btn,
+        .submit-payment-btn {
+            flex: 1;
+            padding: 1.2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn {
+            background: #f1f3f5;
+            color: #333;
+        }
+
+        .back-btn:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .submit-payment-btn {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 184, 148, 0.3);
+        }
+
+        .submit-payment-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 184, 148, 0.4);
+        }
+
+        .submit-payment-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        @media (max-width: 768px) {
+            .payment-card {
+                padding: 1.5rem;
+            }
+
+            .qr-code-container img {
+                max-width: 250px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🍦</span>
+                <span>Anand Ice Cream</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <a href="cart.html" class="cart-icon">
+                🛒
+                <span class="cart-count" id="cartCount">0</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="payment-container">
+        <div class="payment-header">
+            <h1>💳 Complete Payment</h1>
+        </div>
+
+        <div class="payment-card">
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <h2>📋 Order Summary</h2>
+                <div id="orderItems"></div>
+                <div class="summary-row total">
+                    <span>Total Amount:</span>
+                    <span id="totalAmount">₹0</span>
+                </div>
+            </div>
+
+            <!-- Payment Instructions -->
+            <div class="payment-instructions">
+                <h4>📱 Payment Instructions</h4>
+                <ol>
+                    <li>Scan the QR code below using any UPI app (Google Pay, PhonePe, Paytm, etc.)</li>
+                    <li>Complete the payment of the total amount shown above</li>
+                    <li>Take a screenshot of the successful payment confirmation</li>
+                    <li>Upload the screenshot below and click Submit</li>
+                </ol>
+            </div>
+
+            <!-- QR Code Section -->
+            <div class="qr-section">
+                <h3>🔲 Scan QR Code to Pay</h3>
+                <div class="qr-code-container">
+                    <img src="asset/QR/QR.jpg" alt="Payment QR Code">
+                </div>
+            </div>
+
+            <!-- Upload Screenshot Section -->
+            <div class="upload-section">
+                <h3>📸 Upload Payment Screenshot</h3>
+                <div class="file-upload-wrapper">
+                    <input type="file" id="paymentScreenshot" accept="image/*" style="display: none;"
+                        onchange="handleFileSelect(event)">
+                    <label for="paymentScreenshot" class="file-upload-label">
+                        <div style="font-size: 3rem; margin-bottom: 0.5rem;">📁</div>
+                        <div>Click to choose file or drag and drop</div>
+                        <div style="font-size: 0.9rem; margin-top: 0.5rem; color: #999;">Accepted formats: JPG, PNG,
+                            JPEG</div>
+                    </label>
+                </div>
+                <div id="fileName" class="file-name"></div>
+                <img id="previewImage" class="preview-image" alt="Payment Screenshot Preview">
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="payment-buttons">
+                <button class="back-btn" onclick="goBack()">← Back to Cart</button>
+                <button class="submit-payment-btn" id="submitBtn" onclick="submitPayment()" disabled>Submit
+                    Payment</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="cart.js"></script>
+    <script>
+        let orderData = null;
+        let uploadedFile = null;
+
+        // Load order data from localStorage
+        function loadOrderData() {
+            const data = localStorage.getItem('pendingOrder');
+            if (!data) {
+                alert('No order found. Redirecting to cart...');
+                window.location.href = 'cart.html';
+                return;
+            }
+
+            orderData = JSON.parse(data);
+            displayOrderSummary();
+        }
+
+        // Display order summary
+        function displayOrderSummary() {
+            const itemsContainer = document.getElementById('orderItems');
+            let itemsHTML = '';
+
+            orderData.items.forEach(item => {
+                const quantity = item.quantity || 1;
+                itemsHTML += `
+                    <div class="summary-row">
+                        <span>${item.product} (${item.flavor}) x${quantity}</span>
+                        <span>₹${item.price}</span>
+                    </div>
+                `;
+            });
+
+            itemsContainer.innerHTML = itemsHTML;
+            document.getElementById('totalAmount').textContent = '₹' + orderData.totalAmount;
+        }
+
+        // Handle file selection
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            uploadedFile = file;
+
+            // Show file name
+            const fileNameDiv = document.getElementById('fileName');
+            fileNameDiv.textContent = `✓ Selected: ${file.name}`;
+            fileNameDiv.style.display = 'block';
+
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const preview = document.getElementById('previewImage');
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+
+            // Enable submit button
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        // Submit payment
+        async function submitPayment() {
+            if (!uploadedFile) {
+                alert('Please upload payment screenshot first!');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+
+            try {
+                // Convert file to base64
+                const reader = new FileReader();
+                reader.onload = async function (e) {
+                    const base64Screenshot = e.target.result;
+
+                    // Add payment screenshot to order data
+                    const paymentData = {
+                        ...orderData,
+                        paymentScreenshot: base64Screenshot,
+                        paymentStatus: 'pending_verification'
+                    };
+
+                    // Send to backend
+                    const response = await fetch('http://localhost:3000/api/orders', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(paymentData)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to submit order');
+                    }
+
+                    const result = await response.json();
+
+                    // Clear pending order and cart
+                    localStorage.removeItem('pendingOrder');
+                    localStorage.removeItem('anandIceCreamCart');
+                    updateCartCount();
+
+                    // Show success message
+                    alert(`✅ Order Placed Successfully!\n\nOrder ID: ${result.orderId}\nTotal: ₹${orderData.totalAmount}\n\nYour payment is being verified. You will receive confirmation shortly! 🍦`);
+
+                    // Redirect to home
+                    window.location.href = 'index.html';
+                };
+                reader.readAsDataURL(uploadedFile);
+
+            } catch (error) {
+                console.error('Error submitting payment:', error);
+                alert('❌ Failed to submit payment. Please try again.\n\nError: ' + error.message);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Payment';
+            }
+        }
+
+        // Go back to cart
+        function goBack() {
+            window.location.href = 'cart.html';
+        }
+
+        // Update cart count
+        function updateCartCount() {
+            const cart = localStorage.getItem('anandIceCreamCart');
+            const cartArray = cart ? JSON.parse(cart) : [];
+            const cartCount = document.getElementById('cartCount');
+            if (cartCount) {
+                cartCount.textContent = cartArray.length;
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            loadOrderData();
+            updateCartCount();
+        });
+    </script>
+</body>
+
+</html>

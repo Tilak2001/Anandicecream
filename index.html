@@ -96,7 +96,7 @@
         <div class="cards-grid">
             <!-- Card 1: Kulfi -->
             <div class="ice-cream-card">
-                <div class="card-image kulfi">🍡</div>
+                <div class="card-image kulfi"><img src="asset/icimg/kulfi.png" alt="Kulfi"></div>
                 <div class="card-content">
                     <div class="card-title">Kulfi</div>
                     <div class="card-description">Traditional Indian frozen dessert with authentic flavors of cardamom,
@@ -136,7 +136,7 @@
 
             <!-- Card 5: Cone -->
             <div class="ice-cream-card">
-                <div class="card-image cone">🍦</div>
+                <div class="card-image cone"><img src="asset/icimg/cone.png" alt="Cone"></div>
                 <div class="card-content">
                     <div class="card-title">Cone</div>
                     <div class="card-description">Classic crispy waffle cone filled with premium ice cream flavors</div>
@@ -212,29 +212,20 @@
                     </div>
                 </div>
 
-                <!-- Size Selection -->
+                <!-- Quantity Selection -->
                 <div class="option-section">
-                    <label class="option-label">Select Size</label>
-                    <div class="size-options">
-                        <div class="size-option selected" onclick="selectSize(this, 'Small', 20)">
-                            <div class="size-name">Small</div>
-                            <div class="size-price">₹20</div>
-                        </div>
-                        <div class="size-option" onclick="selectSize(this, 'Medium', 40)">
-                            <div class="size-name">Medium</div>
-                            <div class="size-price">₹40</div>
-                        </div>
-                        <div class="size-option" onclick="selectSize(this, 'Large', 50)">
-                            <div class="size-name">Large</div>
-                            <div class="size-price">₹50</div>
-                        </div>
+                    <label class="option-label">Select Quantity</label>
+                    <div class="quantity-selector">
+                        <button class="quantity-btn" onclick="decreaseQuantity()">-</button>
+                        <input type="number" id="quantity" value="1" min="1" max="99" readonly>
+                        <button class="quantity-btn" onclick="increaseQuantity()">+</button>
                     </div>
                 </div>
 
                 <!-- Price Display -->
                 <div class="price-display">
                     <div class="price-label">Total Price</div>
-                    <div class="price-amount" id="totalPrice">₹20</div>
+                    <div class="price-amount" id="totalPrice">₹30</div>
                 </div>
 
                 <!-- Add to Cart Button -->

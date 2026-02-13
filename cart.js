@@ -44,6 +44,10 @@ function displayCart() {
 
         cart.forEach((item, index) => {
             total += item.price;
+            const sizeOrQuantity = item.quantity
+                ? `Quantity: ${item.quantity}`
+                : `Size: ${item.size}`;
+
             itemsHTML += `
                 <div class="cart-item">
                     <div class="item-info">
@@ -51,7 +55,7 @@ function displayCart() {
                         <div class="item-details">
                             <div class="item-name">${item.product}</div>
                             <div class="item-flavor">Flavor: ${item.flavor}</div>
-                            <div class="item-size">Size: ${item.size}</div>
+                            <div class="item-size">${sizeOrQuantity}</div>
                         </div>
                     </div>
                     <div class="item-price">₹${item.price}</div>
@@ -78,7 +82,7 @@ function removeFromCart(index) {
     displayCart();
 }
 
-// Checkout function
+// Checkout function - opens the checkout modal
 function checkout() {
     const cart = getCart();
     if (cart.length === 0) {
@@ -86,13 +90,50 @@ function checkout() {
         return;
     }
 
-    const total = cart.reduce((sum, item) => sum + item.price, 0);
-    alert(`Thank you for your order!\n\nTotal: ₹${total}\n\nYour delicious ice cream will be prepared shortly! 🍦`);
+    // Show checkout modal
+    const modal = document.getElementById('checkoutModal');
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
 
-    // Clear cart
-    localStorage.removeItem('anandIceCreamCart');
-    updateCartCount();
-    displayCart();
+// Close checkout modal
+function closeCheckoutModal() {
+    const modal = document.getElementById('checkoutModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+
+    // Reset form
+    document.getElementById('checkoutForm').reset();
+}
+
+// Submit order function - now redirects to payment page
+async function submitOrder(event) {
+    event.preventDefault();
+
+    const cart = getCart();
+    const total = cart.reduce((sum, item) => sum + item.price, 0);
+
+    // Collect form data
+    const orderData = {
+        customerInfo: {
+            fullName: document.getElementById('fullName').value,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone').value,
+            deliveryAddress: document.getElementById('address').value,
+            pincode: document.getElementById('pincode').value,
+            alternatePhone: document.getElementById('alternatePhone').value || null
+        },
+        items: cart,
+        totalAmount: total,
+        orderDate: new Date().toISOString(),
+        status: 'pending'
+    };
+
+    // Save order data to localStorage for payment page
+    localStorage.setItem('pendingOrder', JSON.stringify(orderData));
+
+    // Redirect to payment page
+    window.location.href = 'payment.html';
 }
 
 // Initialize cart on page load

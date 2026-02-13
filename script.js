@@ -47,8 +47,9 @@ setInterval(() => {
 
 // Product Page Functionality
 let selectedFlavor = 'Badam';
-let selectedSize = 'Small';
-let currentPrice = 20;
+let quantity = 1;
+const unitPrice = 30;
+let currentPrice = 30;
 
 // Open Kulfi product page
 function openKulfiPage() {
@@ -73,19 +74,30 @@ function selectFlavor(element, flavor) {
     selectedFlavor = flavor;
 }
 
-// Select size and update price
-function selectSize(element, size, price) {
-    // Remove selected class from all size options
-    document.querySelectorAll('.size-option').forEach(opt => {
-        opt.classList.remove('selected');
-    });
-    // Add selected class to clicked option
-    element.classList.add('selected');
-    selectedSize = size;
-    currentPrice = price;
+// Increase quantity
+function increaseQuantity() {
+    const quantityInput = document.getElementById('quantity');
+    if (quantity < 99) {
+        quantity++;
+        quantityInput.value = quantity;
+        updatePrice();
+    }
+}
 
-    // Update price display
-    document.getElementById('totalPrice').textContent = '₹' + price;
+// Decrease quantity
+function decreaseQuantity() {
+    const quantityInput = document.getElementById('quantity');
+    if (quantity > 1) {
+        quantity--;
+        quantityInput.value = quantity;
+        updatePrice();
+    }
+}
+
+// Update price based on quantity
+function updatePrice() {
+    currentPrice = unitPrice * quantity;
+    document.getElementById('totalPrice').textContent = '₹' + currentPrice;
 }
 
 // Add to cart
@@ -96,7 +108,8 @@ function addToCart() {
     const cartItem = {
         product: 'Kulfi',
         flavor: selectedFlavor,
-        size: selectedSize,
+        quantity: quantity,
+        unitPrice: unitPrice,
         price: currentPrice
     };
 
