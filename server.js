@@ -2,6 +2,8 @@ const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
+const PDFDocument = require('pdfkit');
+const { createCanvas, loadImage } = require('canvas');
 require('dotenv').config();
 
 const app = express();
@@ -77,6 +79,46 @@ function generateOrderId() {
     return `ORD-${timestamp}-${randomStr}`.toUpperCase();
 }
 
+// Convert base64 image to PDF buffer
+async function convertImageToPDF(base64Image) {
+    try {
+        // Remove data URL prefix if present
+        const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, '');
+        const imageBuffer = Buffer.from(base64Data, 'base64');
+
+        // Load the image to get dimensions
+        const image = await loadImage(imageBuffer);
+
+        // Create PDF document
+        const doc = new PDFDocument({
+            size: [image.width, image.height],
+            margins: { top: 0, bottom: 0, left: 0, right: 0 }
+        });
+
+        // Collect PDF data in chunks
+        const chunks = [];
+        doc.on('data', chunk => chunks.push(chunk));
+
+        // Add image to PDF
+        doc.image(imageBuffer, 0, 0, {
+            width: image.width,
+            height: image.height
+        });
+
+        // Finalize PDF
+        doc.end();
+
+        // Return promise that resolves with PDF buffer
+        return new Promise((resolve, reject) => {
+            doc.on('end', () => resolve(Buffer.concat(chunks)));
+            doc.on('error', reject);
+        });
+    } catch (error) {
+        console.error('❌ Error converting image to PDF:', error);
+        throw error;
+    }
+}
+
 // Email Configuration
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -94,7 +136,7 @@ async function sendOrderEmail(orderData, orderId) {
             `- ${item.product} (${item.flavor}) x${item.quantity || 1} - ₹${item.price}`
         ).join('\n');
 
-        // Prepare email with embedded image
+        // Prepare email options
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: process.env.ADMIN_EMAIL,
@@ -127,9 +169,9 @@ async function sendOrderEmail(orderData, orderId) {
                     </div>
 
                     ${orderData.paymentScreenshot ? `
-                    <div style="background: #fff; padding: 20px; border-radius: 10px; margin: 20px 0; border: 2px solid #ddd;">
-                        <h3 style="color: #333;">Payment Screenshot</h3>
-                        <img src="${orderData.paymentScreenshot}" alt="Payment Screenshot" style="max-width: 100%; height: auto; border-radius: 8px;" />
+                    <div style="background: #fff; padding: 20px; border-radius: 10px; margin: 20px 0; border: 2px solid #4CAF50;">
+                        <h3 style="color: #333;">📎 Payment Screenshot</h3>
+                        <p style="color: #666; font-size: 14px;">Payment screenshot is attached as a PDF file. Please check the attachment to view the payment proof.</p>
                     </div>
                     ` : '<p style="color: #999;">No payment screenshot provided</p>'}
 
@@ -137,8 +179,33 @@ async function sendOrderEmail(orderData, orderId) {
                         <p>This is an automated email from Anand Ice Cream ordering system.</p>
                     </div>
                 </div>
-            `
+            `,
+            attachments: []
         };
+
+        // Convert payment screenshot to PDF and attach if available
+        if (orderData.paymentScreenshot) {
+            try {
+                const pdfBuffer = await convertImageToPDF(orderData.paymentScreenshot);
+                mailOptions.attachments.push({
+                    filename: `payment-screenshot-${orderId}.pdf`,
+                    content: pdfBuffer,
+                    contentType: 'application/pdf'
+                });
+                console.log(`✅ Payment screenshot converted to PDF for order: ${orderId}`);
+            } catch (pdfError) {
+                console.error('❌ Error converting screenshot to PDF:', pdfError);
+                // Fallback: attach as image if PDF conversion fails
+                const base64Data = orderData.paymentScreenshot.replace(/^data:image\/\w+;base64,/, '');
+                const imageBuffer = Buffer.from(base64Data, 'base64');
+                mailOptions.attachments.push({
+                    filename: `payment-screenshot-${orderId}.png`,
+                    content: imageBuffer,
+                    contentType: 'image/png'
+                });
+                console.log(`⚠️ Fallback: Attached screenshot as image for order: ${orderId}`);
+            }
+        }
 
         await transporter.sendMail(mailOptions);
         console.log(`📧 Order email sent to admin for order: ${orderId}`);
