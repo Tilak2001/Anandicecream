@@ -187,5 +187,177 @@ def send_order_email(order_data, order_id):
         return True
         
     except Exception as e:
-        print(f"❌ Error sending email: {e}")
+        print(f"[ERROR] Error sending email: {e}")
         return False
+
+
+def send_order_acceptance_email(order):
+    """
+    Send order acceptance email to customer
+    
+    Args:
+        order: Order model instance
+        
+    Returns:
+        Boolean indicating success
+    """
+    try:
+        # Format items for email
+        items_list = '\n'.join([
+            f"- {item['product']} ({item['flavor']}) x{item.get('quantity', 1)} - ₹{item['price']}"
+            for item in order.items
+        ])
+        
+        # Email subject
+        subject = f"Order Confirmed - Anand Ice Cream (Order #{order.order_id})"
+        
+        # Email body (HTML)
+        html_message = f"""
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+                <h1 style="color: white; margin: 0;">🎉 Order Confirmed!</h1>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px;">
+                <p style="font-size: 16px; color: #333;">Dear {order.full_name},</p>
+                
+                <p style="font-size: 16px; color: #333; line-height: 1.6;">
+                    Great news! Your order has been <strong style="color: #00b894;">successfully confirmed</strong>.
+                </p>
+                
+                <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #00b894;">
+                    <h3 style="color: #333; margin-top: 0;">Order Details</h3>
+                    <p><strong>Order ID:</strong> {order.order_id}</p>
+                    <p><strong>Total Amount:</strong> ₹{order.total_amount}</p>
+                    <p><strong>Order Date:</strong> {order.order_date.strftime('%B %d, %Y at %I:%M %p')}</p>
+                </div>
+                
+                <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h3 style="color: #333; margin-top: 0;">Order Items</h3>
+                    <pre style="font-family: monospace; white-space: pre-wrap; color: #666;">{items_list}</pre>
+                </div>
+                
+                <div style="background: #e8f5e9; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center;">
+                    <p style="font-size: 18px; color: #00b894; margin: 0;">
+                        🍦 Your delicious ice cream will be delivered soon!
+                    </p>
+                </div>
+                
+                <p style="font-size: 14px; color: #666; margin-top: 30px;">
+                    Thank you for choosing Anand Ice Cream!
+                </p>
+                
+                <p style="font-size: 14px; color: #666;">
+                    Best regards,<br>
+                    <strong>Anand Ice Cream Team</strong>
+                </p>
+            </div>
+            
+            <div style="margin-top: 20px; padding: 20px; text-align: center; color: #999; font-size: 12px;">
+                <p>This is an automated email from Anand Ice Cream ordering system.</p>
+            </div>
+        </div>
+        """
+        
+        # Create email
+        email = EmailMessage(
+            subject=subject,
+            body=html_message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[order.email],
+        )
+        email.content_subtype = 'html'
+        
+        # Send email
+        email.send()
+        print(f"[SUCCESS] Order acceptance email sent to {order.email} for order: {order.order_id}")
+        return True
+        
+    except Exception as e:
+        print(f"[ERROR] Error sending acceptance email: {e}")
+        return False
+
+
+def send_order_rejection_email(order):
+    """
+    Send order rejection email to customer with refund information
+    
+    Args:
+        order: Order model instance
+        
+    Returns:
+        Boolean indicating success
+    """
+    try:
+        # Email subject
+        subject = f"Order Cancelled - Anand Ice Cream (Order #{order.order_id})"
+        
+        # Email body (HTML)
+        html_message = f"""
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background: linear-gradient(135deg, #ff6b9d 0%, #e84393 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+                <h1 style="color: white; margin: 0;">Order Cancelled</h1>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px;">
+                <p style="font-size: 16px; color: #333;">Dear {order.full_name},</p>
+                
+                <p style="font-size: 16px; color: #333; line-height: 1.6;">
+                    We regret to inform you that your order has been <strong style="color: #e84393;">cancelled</strong>.
+                </p>
+                
+                <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #e84393;">
+                    <h3 style="color: #333; margin-top: 0;">Order Details</h3>
+                    <p><strong>Order ID:</strong> {order.order_id}</p>
+                    <p><strong>Total Amount:</strong> ₹{order.total_amount}</p>
+                    <p><strong>Order Date:</strong> {order.order_date.strftime('%B %d, %Y at %I:%M %p')}</p>
+                </div>
+                
+                <div style="background: #fff3cd; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #ffc107;">
+                    <h3 style="color: #856404; margin-top: 0;">💰 Refund Information</h3>
+                    <p style="color: #856404; font-size: 15px; line-height: 1.6;">
+                        Your amount of <strong>₹{order.total_amount}</strong> will be refunded within <strong>3 working days</strong>.
+                    </p>
+                </div>
+                
+                <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; border: 2px solid #667eea;">
+                    <h3 style="color: #333; margin-top: 0;">📞 Need Help?</h3>
+                    <p style="color: #666; margin: 10px 0;">For more details, please contact us:</p>
+                    <p style="margin: 5px 0;"><strong>Email:</strong> <a href="mailto:anandicecream@gmail.com" style="color: #667eea; text-decoration: none;">anandicecream@gmail.com</a></p>
+                    <p style="margin: 5px 0;"><strong>Phone:</strong> <a href="tel:1234567890" style="color: #667eea; text-decoration: none;">1234567890</a></p>
+                </div>
+                
+                <p style="font-size: 14px; color: #666; margin-top: 30px;">
+                    We apologize for any inconvenience caused.
+                </p>
+                
+                <p style="font-size: 14px; color: #666;">
+                    Best regards,<br>
+                    <strong>Anand Ice Cream Team</strong>
+                </p>
+            </div>
+            
+            <div style="margin-top: 20px; padding: 20px; text-align: center; color: #999; font-size: 12px;">
+                <p>This is an automated email from Anand Ice Cream ordering system.</p>
+            </div>
+        </div>
+        """
+        
+        # Create email
+        email = EmailMessage(
+            subject=subject,
+            body=html_message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[order.email],
+        )
+        email.content_subtype = 'html'
+        
+        # Send email
+        email.send()
+        print(f"[SUCCESS] Order rejection email sent to {order.email} for order: {order.order_id}")
+        return True
+        
+    except Exception as e:
+        print(f"[ERROR] Error sending rejection email: {e}")
+        return False
+

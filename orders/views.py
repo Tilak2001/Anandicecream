@@ -2,9 +2,14 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.db import connection
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib import messages
 from .models import Order
 from .serializers import OrderSerializer, OrderCreateSerializer
-from .utils import generate_order_id, send_order_email
+from .utils import generate_order_id, send_order_email, send_order_acceptance_email, send_order_rejection_email
+import json
 
 
 @api_view(['GET'])
@@ -63,7 +68,7 @@ def create_order(request):
             order_date=data.get('orderDate')
         )
         
-        print(f"✅ New order created: {order_id} (Payment: {order.payment_status})")
+        print(f"[SUCCESS] New order created: {order_id} (Payment: {order.payment_status})")
         
         # Send email to admin (async in background)
         try:
@@ -102,7 +107,7 @@ def create_order(request):
         }, status=status.HTTP_201_CREATED)
         
     except Exception as e:
-        print(f"❌ Error creating order: {e}")
+        print(f"[ERROR] Error creating order: {e}")
         return Response({
             'error': 'Failed to create order',
             'message': str(e)
@@ -151,3 +156,188 @@ def get_order(request, order_id):
             'error': 'Failed to fetch order',
             'message': str(e)
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# Admin Authentication Views
+def admin_login_view(request):
+    """Admin login page"""
+    if request.session.get('is_admin'):
+        return redirect('admin_dashboard')
+    
+    return render(request, 'admin_login.html')
+
+
+@csrf_exempt
+def admin_login_api(request):
+    """Admin login API endpoint"""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            username = data.get('username', '')
+            password = data.get('password', '')
+            
+            # Hardcoded credentials
+            if username == 'admin' and password == 'admin':
+                # Set session
+                request.session['is_admin'] = True
+                request.session['admin_username'] = username
+                
+                return JsonResponse({
+                    'success': True,
+                    'message': 'Login successful'
+                })
+            else:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Invalid username or password'
+                }, status=401)
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'message': str(e)
+            }, status=500)
+    
+    return JsonResponse({
+        'success': False,
+        'message': 'Method not allowed'
+    }, status=405)
+
+
+def admin_logout_view(request):
+    """Admin logout"""
+    request.session.flush()
+    return redirect('admin_login')
+
+
+def admin_dashboard_view(request):
+    """Admin dashboard - requires authentication"""
+    if not request.session.get('is_admin'):
+        return redirect('admin_login')
+    
+    # Get all orders
+    orders = Order.objects.all().order_by('-created_at')
+    
+    # Calculate statistics
+    total_orders = orders.count()
+    pending_orders = orders.filter(status='pending').count()
+    confirmed_orders = orders.filter(status='confirmed').count()
+    delivered_orders = orders.filter(status='delivered').count()
+    
+    # Calculate revenue
+    total_revenue = sum(float(order.total_amount) for order in orders)
+    
+    context = {
+        'admin_username': request.session.get('admin_username', 'Admin'),
+        'orders': orders[:20],  # Show latest 20 orders
+        'total_orders': total_orders,
+        'pending_orders': pending_orders,
+        'confirmed_orders': confirmed_orders,
+        'delivered_orders': delivered_orders,
+        'total_revenue': total_revenue,
+    }
+    
+    return render(request, 'admin_dashboard.html', context)
+
+
+def pending_orders_view(request):
+    """Pending orders page - requires authentication"""
+    if not request.session.get('is_admin'):
+        return redirect('admin_login')
+    
+    # Get all pending orders
+    pending_orders = Order.objects.filter(status='pending').order_by('-created_at')
+    
+    context = {
+        'admin_username': request.session.get('admin_username', 'Admin'),
+        'pending_orders': pending_orders,
+    }
+    
+    return render(request, 'pending_orders.html', context)
+
+
+@csrf_exempt
+def update_order_status(request, order_id):
+    """API endpoint to accept or reject orders"""
+    if request.method == 'POST':
+        try:
+            # Check if admin is logged in
+            if not request.session.get('is_admin'):
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Unauthorized'
+                }, status=401)
+            
+            # Get order
+            try:
+                order = Order.objects.get(order_id=order_id)
+            except Order.DoesNotExist:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Order not found'
+                }, status=404)
+            
+            # Parse request data
+            data = json.loads(request.body)
+            action = data.get('action')
+            
+            if action == 'accept':
+                # Update order status to confirmed
+                order.status = 'confirmed'
+                order.payment_status = 'verified'
+                order.save()
+                
+                # Send acceptance email
+                try:
+                    send_order_acceptance_email(order)
+                except Exception as email_error:
+                    print(f"[ERROR] Failed to send acceptance email: {email_error}")
+                
+                return JsonResponse({
+                    'success': True,
+                    'message': 'Order accepted successfully',
+                    'order': {
+                        'order_id': order.order_id,
+                        'status': order.status,
+                        'payment_status': order.payment_status
+                    }
+                })
+                
+            elif action == 'reject':
+                # Update order status to cancelled
+                order.status = 'cancelled'
+                order.payment_status = 'failed'
+                order.save()
+                
+                # Send rejection email with refund information
+                try:
+                    send_order_rejection_email(order)
+                except Exception as email_error:
+                    print(f"[ERROR] Failed to send rejection email: {email_error}")
+                
+                return JsonResponse({
+                    'success': True,
+                    'message': 'Order rejected successfully',
+                    'order': {
+                        'order_id': order.order_id,
+                        'status': order.status,
+                        'payment_status': order.payment_status
+                    }
+                })
+            else:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Invalid action'
+                }, status=400)
+                
+        except Exception as e:
+            print(f"[ERROR] Error updating order status: {e}")
+            return JsonResponse({
+                'success': False,
+                'message': str(e)
+            }, status=500)
+    
+    return JsonResponse({
+        'success': False,
+        'message': 'Method not allowed'
+    }, status=405)
+
