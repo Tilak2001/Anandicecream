@@ -1,42 +1,67 @@
-# Anand Ice Cream - Setup Instructions
+# Anand Ice Cream - Django Application
+
+A modern ice cream ordering system built with Django backend and vanilla JavaScript frontend, featuring admin order management, email notifications, and payment processing.
+
+## Features
+
+### Customer Features
+- Browse ice cream products with flavors and pricing
+- Add items to cart with quantity selection
+- Checkout with customer information form
+- Payment via QR code with screenshot upload
+- Order confirmation and tracking
+
+### Admin Features
+- Secure admin login (username: `admin`, password: `admin`)
+- Admin dashboard with order statistics
+- View and manage pending orders
+- Accept/Reject orders with automated email notifications
+- Order status tracking (pending, confirmed, delivered, cancelled)
 
 ## Prerequisites
-- Node.js (v14 or higher)
-- PostgreSQL (v12 or higher)
+
+- Python 3.8 or higher
+- PostgreSQL 12 or higher
+- pip (Python package manager)
 
 ## Installation Steps
 
-### 1. Install Dependencies
+### 1. Clone the Repository
 ```bash
-npm install
+git clone https://github.com/Tilak2001/Anandicecream.git
+cd Anandicecream
 ```
 
-### 2. Set Up PostgreSQL
+### 2. Create Virtual Environment
+```bash
+# Windows
+python -m venv venv
+venv\Scripts\activate
 
-**Option A: Local PostgreSQL**
-- Install PostgreSQL from https://www.postgresql.org/download/
-- During installation, remember your postgres user password
-- Start PostgreSQL service:
-  ```bash
-  # Windows
-  # PostgreSQL should start automatically as a service
-  
-  # Mac
-  brew services start postgresql
-  
-  # Linux
-  sudo systemctl start postgresql
-  ```
+# Mac/Linux
+python3 -m venv venv
+source venv/bin/activate
+```
 
-**Option B: PostgreSQL Cloud (ElephantSQL, Supabase, etc.)**
-- Create free account at https://www.elephantsql.com/ or https://supabase.com/
-- Create a new database instance
-- Get connection details
-- Update `.env` file with your connection details
+### 3. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
 
-### 3. Create Database
+### 4. Set Up PostgreSQL
 
-**Using psql (PostgreSQL CLI):**
+**Start PostgreSQL Service:**
+```bash
+# Windows - PostgreSQL runs as a service automatically
+
+# Mac
+brew services start postgresql
+
+# Linux
+sudo systemctl start postgresql
+```
+
+**Create Database:**
 ```bash
 # Connect to PostgreSQL
 psql -U postgres
@@ -48,45 +73,76 @@ CREATE DATABASE anand_ice_cream;
 \q
 ```
 
-**Using pgAdmin (GUI):**
-- Open pgAdmin
-- Right-click on "Databases"
-- Select "Create" → "Database"
-- Name: `anand_ice_cream`
-- Click "Save"
+### 5. Configure Environment Variables
 
-### 4. Configure Environment
-- Update `.env` file with your PostgreSQL credentials:
-  ```env
-  DB_HOST=localhost
-  DB_PORT=5432
-  DB_NAME=anand_ice_cream
-  DB_USER=postgres
-  DB_PASSWORD=your_actual_password
-  ```
+Update `.env` file with your credentials:
+```env
+# Database Configuration
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=anand_ice_cream
+DB_USER=postgres
+DB_PASSWORD=your_password
 
-### 5. Start the Server
+# Email Configuration (Gmail)
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASSWORD=your_app_password
+ADMIN_EMAIL=admin_email@gmail.com
+```
+
+**Note:** For Gmail, use an App Password (not your regular password):
+1. Go to https://myaccount.google.com/apppasswords
+2. Generate a new app password
+3. Use that password in `EMAIL_PASSWORD`
+
+### 6. Run Database Migrations
 ```bash
-npm start
+python manage.py makemigrations
+python manage.py migrate
 ```
 
-The server will automatically create the required tables on first run.
-
-You should see:
-```
-✅ Connected to PostgreSQL
-✅ Database tables initialized
-🚀 Server running on http://localhost:3000
+### 7. Start the Development Server
+```bash
+python manage.py runserver
 ```
 
-### 6. Open the Application
-- Open `index.html` in your browser
-- Or use a local server like Live Server in VS Code
+The application will be available at: **http://localhost:8000**
+
+## Application Structure
+
+```
+anand_ice_cream/          # Django project settings
+├── settings.py           # Configuration
+├── urls.py              # Main URL routing
+└── wsgi.py              # WSGI config
+
+orders/                   # Main Django app
+├── models.py            # Order model
+├── views.py             # API and page views
+├── urls.py              # API endpoints
+├── utils.py             # Email utilities
+└── serializers.py       # DRF serializers
+
+templates/               # HTML templates
+├── index.html          # Home page
+├── cart.html           # Shopping cart
+├── payment.html        # Payment page
+├── admin_login.html    # Admin login
+├── admin_dashboard.html # Admin dashboard
+└── pending_orders.html  # Order management
+
+static/                  # Static files
+├── css/                # Stylesheets
+├── js/                 # JavaScript
+└── images/             # Product images
+
+media/                   # User uploads
+└── payment_screenshots/ # Payment proofs
+```
 
 ## Database Schema
 
-The `orders` table will be created automatically with the following structure:
-
+### Orders Table
 ```sql
 CREATE TABLE orders (
     id SERIAL PRIMARY KEY,
@@ -99,113 +155,200 @@ CREATE TABLE orders (
     alternate_phone VARCHAR(20),
     items JSONB NOT NULL,
     total_amount DECIMAL(10, 2) NOT NULL,
+    payment_screenshot TEXT,
+    payment_status VARCHAR(20) DEFAULT 'pending',
+    status VARCHAR(20) DEFAULT 'pending',
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status VARCHAR(50) DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
 
-## Testing the Checkout Flow
-
-1. Add items to cart from the home page
-2. Go to cart page
-3. Click "Proceed to Checkout"
-4. Fill in the form with customer details
-5. Click "Checkout" button
-6. Order will be saved to PostgreSQL database
-
-## Viewing Orders in Database
-
-**pgAdmin (GUI):**
-- Download from https://www.pgadmin.org/download/
-- Connect to your PostgreSQL server
-- Navigate to: Servers → PostgreSQL → Databases → anand_ice_cream → Schemas → public → Tables → orders
-- Right-click on "orders" → "View/Edit Data" → "All Rows"
-
-**psql (CLI):**
-```bash
-psql -U postgres -d anand_ice_cream
-
-# View all orders
-SELECT * FROM orders;
-
-# View orders with formatted JSON
-SELECT order_id, full_name, email, items, total_amount, status 
-FROM orders 
-ORDER BY created_at DESC;
-
-# Exit
-\q
-```
-
-**Using SQL Query:**
-```sql
--- Get all orders
-SELECT * FROM orders ORDER BY created_at DESC;
-
--- Get orders by status
-SELECT * FROM orders WHERE status = 'pending';
-
--- Get customer details with order count
-SELECT email, full_name, COUNT(*) as order_count, SUM(total_amount) as total_spent
-FROM orders
-GROUP BY email, full_name;
-```
-
 ## API Endpoints
 
-- `GET /api/health` - Check server and database status
-- `POST /api/orders` - Create new order
-- `GET /api/orders` - Get all orders
-- `GET /api/orders/:orderId` - Get specific order
+### Public Endpoints
+- `GET /api/health/` - Health check
+- `POST /api/orders/` - Create new order
+- `GET /api/orders/` - List all orders
+- `GET /api/orders/<order_id>/` - Get specific order
+
+### Admin Endpoints
+- `POST /api/admin/login/` - Admin authentication
+- `POST /api/orders/<order_id>/update-status/` - Accept/reject orders
+
+### Pages
+- `/` - Home page
+- `/cart.html` - Shopping cart
+- `/payment.html` - Payment page
+- `/admin-login.html` - Admin login
+- `/admin-dashboard.html` - Admin dashboard
+- `/pending-orders.html` - Order management
+
+## Admin Access
+
+**Login Credentials:**
+- Username: `admin`
+- Password: `admin`
+
+**Admin Features:**
+1. View order statistics (total, pending, confirmed, delivered)
+2. Monitor total revenue
+3. View recent orders
+4. Manage pending orders
+5. Accept orders (sends confirmation email)
+6. Reject orders (sends cancellation email with refund info)
+
+## Email Notifications
+
+### Order Acceptance Email
+- Subject: "Order Confirmed - Anand Ice Cream"
+- Contains: Order details, items, delivery message
+- Sent to: Customer email
+
+### Order Rejection Email
+- Subject: "Order Cancelled - Anand Ice Cream"
+- Contains: Order details, refund information (3 working days)
+- Contact: anandicecream@gmail.com, 1234567890
+- Sent to: Customer email
+
+### Admin Notification Email
+- Subject: "New Order Received"
+- Contains: Full order details, customer info, payment screenshot (PDF)
+- Sent to: Admin email (configured in .env)
+
+## Usage Guide
+
+### For Customers
+
+1. **Browse Products**
+   - Visit http://localhost:8000
+   - View ice cream products with flavors and prices
+
+2. **Add to Cart**
+   - Select product and flavor
+   - Click "Add to Cart"
+   - View cart icon for item count
+
+3. **Checkout**
+   - Go to cart page
+   - Review items
+   - Click "Proceed to Checkout"
+   - Fill in delivery details
+
+4. **Payment**
+   - Scan QR code
+   - Make payment
+   - Upload payment screenshot
+   - Submit order
+
+### For Admins
+
+1. **Login**
+   - Go to http://localhost:8000/admin-login.html
+   - Enter credentials (admin/admin)
+
+2. **View Dashboard**
+   - See order statistics
+   - Monitor revenue
+   - View recent orders
+
+3. **Manage Orders**
+   - Click "Pending Orders" card
+   - View order details
+   - Accept or reject orders
+   - Customers receive email notifications
 
 ## Troubleshooting
 
-**Server won't start:**
-- Check if PostgreSQL is running
-- Verify `.env` file has correct database credentials
-- Try connecting to PostgreSQL manually: `psql -U postgres`
+### Server won't start
+- Ensure PostgreSQL is running
+- Check `.env` file credentials
+- Verify virtual environment is activated
 
-**Database connection error:**
+### Database connection error
 - Verify PostgreSQL service is running
-- Check username and password in `.env`
+- Check database name and credentials
 - Ensure database `anand_ice_cream` exists
 
-**Orders not saving:**
+### Email not sending
+- Verify Gmail App Password is correct
+- Check EMAIL_USER and EMAIL_PASSWORD in `.env`
+- Ensure "Less secure app access" is enabled (if not using App Password)
+
+### Admin page 404 error
+- Restart Django server: `Ctrl+C` then `python manage.py runserver`
+- Clear browser cache
+- Check URL: http://localhost:8000/admin-login.html
+
+### Orders not saving
 - Check browser console for errors
-- Verify server is running on port 3000
+- Verify server is running
 - Check server logs for database errors
-- Ensure tables were created (check server startup logs)
 
-**CORS errors:**
-- Server has CORS enabled by default
-- If using different port, update fetch URL in `cart.js`
-
-## PostgreSQL Commands Cheat Sheet
+## PostgreSQL Commands
 
 ```bash
 # Connect to database
 psql -U postgres -d anand_ice_cream
 
-# List all databases
-\l
+# View all orders
+SELECT * FROM orders ORDER BY created_at DESC;
 
-# List all tables
-\dt
+# View pending orders
+SELECT * FROM orders WHERE status = 'pending';
 
-# Describe table structure
-\d orders
+# View order statistics
+SELECT status, COUNT(*) as count, SUM(total_amount) as total
+FROM orders
+GROUP BY status;
 
-# View table data
-SELECT * FROM orders;
-
-# Count orders
-SELECT COUNT(*) FROM orders;
-
-# Delete all orders (careful!)
-DELETE FROM orders;
-
-# Drop table (careful!)
-DROP TABLE orders;
+# Exit
+\q
 ```
+
+## Development
+
+### Running Tests
+```bash
+python manage.py test
+```
+
+### Creating Superuser (Django Admin)
+```bash
+python manage.py createsuperuser
+```
+
+### Collecting Static Files
+```bash
+python manage.py collectstatic
+```
+
+## Technology Stack
+
+- **Backend:** Django 5.0.1, Django REST Framework
+- **Database:** PostgreSQL
+- **Frontend:** HTML5, CSS3, Vanilla JavaScript
+- **Email:** Django Email (SMTP)
+- **PDF Generation:** ReportLab, Pillow
+
+## Security Notes
+
+- Change default admin credentials in production
+- Use environment variables for sensitive data
+- Enable HTTPS in production
+- Set `DEBUG = False` in production
+- Configure ALLOWED_HOSTS properly
+
+## License
+
+This project is for educational purposes.
+
+## Contact
+
+For support or queries:
+- Email: anandicecream@gmail.com
+- Phone: 1234567890
+
+## Contributors
+
+- Tilak Pednekar

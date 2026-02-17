@@ -90,6 +90,12 @@
         .stat-card.confirmed {
             background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
             color: white;
+            cursor: pointer;
+        }
+
+        .stat-card.confirmed:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0, 184, 148, 0.4);
         }
 
         .stat-card.delivered {
@@ -255,7 +261,7 @@
                 <div class="stat-value">{{ pending_orders }}</div>
             </div>
 
-            <div class="stat-card confirmed">
+            <div class="stat-card confirmed" onclick="window.location.href='confirmed-orders.html'">
                 <div class="stat-icon">✅</div>
                 <div class="stat-label">Confirmed Orders</div>
                 <div class="stat-value">{{ confirmed_orders }}</div>

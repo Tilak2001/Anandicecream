@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from .models import Order
 from .serializers import OrderSerializer, OrderCreateSerializer
-from .utils import generate_order_id, send_order_email, send_order_acceptance_email, send_order_rejection_email
+from .utils import generate_order_id, send_order_email, send_order_acceptance_email, send_order_rejection_email, send_delivery_confirmation_email, send_cancellation_email
 import json
 
 
@@ -255,9 +255,25 @@ def pending_orders_view(request):
     return render(request, 'pending_orders.html', context)
 
 
+def confirmed_orders_view(request):
+    """Confirmed orders page - requires authentication"""
+    if not request.session.get('is_admin'):
+        return redirect('admin_login')
+    
+    # Get all confirmed orders
+    confirmed_orders = Order.objects.filter(status='confirmed').order_by('-created_at')
+    
+    context = {
+        'admin_username': request.session.get('admin_username', 'Admin'),
+        'confirmed_orders': confirmed_orders,
+    }
+    
+    return render(request, 'confirmed_orders.html', context)
+
+
 @csrf_exempt
 def update_order_status(request, order_id):
-    """API endpoint to accept or reject orders"""
+    """API endpoint to accept/reject/deliver/cancel orders"""
     if request.method == 'POST':
         try:
             # Check if admin is logged in
@@ -317,6 +333,48 @@ def update_order_status(request, order_id):
                 return JsonResponse({
                     'success': True,
                     'message': 'Order rejected successfully',
+                    'order': {
+                        'order_id': order.order_id,
+                        'status': order.status,
+                        'payment_status': order.payment_status
+                    }
+                })
+                
+            elif action == 'deliver':
+                # Mark order as delivered
+                order.status = 'delivered'
+                order.save()
+                
+                # Send delivery confirmation email
+                try:
+                    send_delivery_confirmation_email(order)
+                except Exception as email_error:
+                    print(f"[ERROR] Failed to send delivery confirmation email: {email_error}")
+                
+                return JsonResponse({
+                    'success': True,
+                    'message': 'Order marked as delivered successfully',
+                    'order': {
+                        'order_id': order.order_id,
+                        'status': order.status
+                    }
+                })
+                
+            elif action == 'cancel':
+                # Cancel confirmed order
+                order.status = 'cancelled'
+                order.payment_status = 'failed'
+                order.save()
+                
+                # Send cancellation email with refund info
+                try:
+                    send_cancellation_email(order)
+                except Exception as email_error:
+                    print(f"[ERROR] Failed to send cancellation email: {email_error}")
+                
+                return JsonResponse({
+                    'success': True,
+                    'message': 'Order cancelled successfully',
                     'order': {
                         'order_id': order.order_id,
                         'status': order.status,

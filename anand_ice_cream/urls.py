@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin-dashboard.html', order_views.admin_dashboard_view, name='admin_dashboard'),
     path('admin-logout/', order_views.admin_logout_view, name='admin_logout'),
     path('pending-orders.html', order_views.pending_orders_view, name='pending_orders'),  # Pending orders management
+    path('confirmed-orders.html', order_views.confirmed_orders_view, name='confirmed_orders'),  # Confirmed orders management
 ]
 
 # Serve static and media files in development

@@ -1,0 +1,369 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmed Orders - Anand Ice Cream</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        .confirmed-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            color: #333;
+        }
+
+        .back-btn {
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .order-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .order-id {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #00b894;
+        }
+
+        .order-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .order-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+        }
+
+        .detail-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .detail-item {
+            margin: 0.5rem 0;
+            color: #666;
+        }
+
+        .detail-item strong {
+            color: #333;
+        }
+
+        .items-list {
+            background: #e8f8f5;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+
+        .item-row {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #d1f2eb;
+        }
+
+        .item-row:last-child {
+            border-bottom: none;
+        }
+
+        .total-amount {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00b894;
+            text-align: right;
+            margin-top: 1rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .deliver-btn,
+        .cancel-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .deliver-btn {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+        }
+
+        .deliver-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(116, 185, 255, 0.3);
+        }
+
+        .cancel-btn {
+            background: linear-gradient(135deg, #ff6b9d 0%, #e84393 100%);
+            color: white;
+        }
+
+        .cancel-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 157, 0.3);
+        }
+
+        .deliver-btn:disabled,
+        .cancel-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .no-orders {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .no-orders-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🍦</span>
+                <span>Anand Ice Cream</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="admin-dashboard.html" class="active">Admin</a></li>
+            </ul>
+            <a href="cart.html" class="cart-icon">
+                🛒
+                <span class="cart-count" id="cartCount">0</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="confirmed-container">
+        <div class="page-header">
+            <h1 class="page-title">✅ Confirmed Orders</h1>
+            <a href="admin-dashboard.html" class="back-btn">← Back to Dashboard</a>
+        </div>
+
+        {% if confirmed_orders %}
+        {% for order in confirmed_orders %}
+        <div class="order-card" id="order-{{ order.order_id }}">
+            <div class="order-header">
+                <div>
+                    <div class="order-id">Order #{{ order.order_id }}</div>
+                    <div class="order-date">{{ order.order_date|date:"F d, Y at h:i A" }}</div>
+                    <span class="status-badge">✓ Confirmed</span>
+                </div>
+                <div class="total-amount">₹{{ order.total_amount }}</div>
+            </div>
+
+            <div class="order-details">
+                <div class="detail-section">
+                    <div class="detail-title">👤 Customer Information</div>
+                    <div class="detail-item"><strong>Name:</strong> {{ order.full_name }}</div>
+                    <div class="detail-item"><strong>Email:</strong> {{ order.email }}</div>
+                    <div class="detail-item"><strong>Phone:</strong> {{ order.phone }}</div>
+                    {% if order.alternate_phone %}
+                    <div class="detail-item"><strong>Alternate Phone:</strong> {{ order.alternate_phone }}</div>
+                    {% endif %}
+                    <div class="detail-item"><strong>Address:</strong> {{ order.delivery_address }}</div>
+                    <div class="detail-item"><strong>Pincode:</strong> {{ order.pincode }}</div>
+                </div>
+
+                <div class="detail-section">
+                    <div class="detail-title">🍦 Order Items</div>
+                    <div class="items-list">
+                        {% for item in order.items %}
+                        <div class="item-row">
+                            {{ item.product }} ({{ item.flavor }}) x{{ item.quantity|default:1 }} - ₹{{ item.price }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <div class="detail-title">💳 Payment Information</div>
+                    <div class="detail-item"><strong>Payment Status:</strong> {{ order.get_payment_status_display }}
+                    </div>
+                    <div class="detail-item"><strong>Confirmed Date:</strong> {{ order.updated_at|date:"F d, Y at h:i A"
+                        }}</div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="deliver-btn" onclick="handleOrderAction('{{ order.order_id }}', 'deliver')">
+                    🚚 Mark as Delivered
+                </button>
+                <button class="cancel-btn" onclick="handleOrderAction('{{ order.order_id }}', 'cancel')">
+                    ❌ Cancel Order
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="no-orders">
+            <div class="no-orders-icon">📭</div>
+            <h2>No Confirmed Orders</h2>
+            <p>There are no confirmed orders waiting for delivery!</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        async function handleOrderAction(orderId, action) {
+            const actionText = action === 'deliver' ? 'mark as delivered' : 'cancel';
+            const confirmText = action === 'deliver'
+                ? 'Are you sure you want to MARK THIS ORDER AS DELIVERED?\n\nThe customer will receive a delivery confirmation email.'
+                : 'Are you sure you want to CANCEL this order?\n\nThe customer will receive a cancellation email with refund information (3 working days).';
+
+            if (!confirm(confirmText)) {
+                return;
+            }
+
+            // Disable buttons
+            const orderCard = document.getElementById(`order-${orderId}`);
+            const buttons = orderCard.querySelectorAll('button');
+            buttons.forEach(btn => btn.disabled = true);
+
+            try {
+                const response = await fetch(`/api/orders/${orderId}/update-status/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ action: action })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const successMsg = action === 'deliver'
+                        ? '✅ Order marked as delivered successfully!\n\nDelivery confirmation email sent to customer.'
+                        : '✅ Order cancelled successfully!\n\nCancellation email with refund information sent to customer.';
+
+                    alert(successMsg);
+
+                    // Remove the order card from view
+                    orderCard.style.opacity = '0';
+                    setTimeout(() => {
+                        orderCard.remove();
+                        // Check if there are no more orders
+                        const remainingOrders = document.querySelectorAll('.order-card');
+                        if (remainingOrders.length === 0) {
+                            location.reload();
+                        }
+                    }, 500);
+                } else {
+                    alert(`❌ Failed to ${actionText} order: ${data.message}`);
+                    buttons.forEach(btn => btn.disabled = false);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert(`❌ An error occurred while ${actionText}ing the order.`);
+                buttons.forEach(btn => btn.disabled = false);
+            }
+        }
+
+        // Update cart count
+        function updateCartCount() {
+            const cart = localStorage.getItem('anandIceCreamCart');
+            const cartArray = cart ? JSON.parse(cart) : [];
+            const cartCount = document.getElementById('cartCount');
+            if (cartCount) {
+                cartCount.textContent = cartArray.length;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', updateCartCount);
+    </script>
+</body>
+
+</html>
