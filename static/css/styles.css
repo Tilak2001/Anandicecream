@@ -608,16 +608,47 @@ nav {
     transform: scale(0.95);
 }
 
-#quantity {
-    width: 80px;
+#quantity,
+#cupQuantity,
+#gadbadQuantity,
+#dollyQuantity,
+#coneQuantity,
+#scoopQuantity,
+#chocbarQuantity,
+#familyQuantity {
+    width: 50px;
     height: 50px;
     text-align: center;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: bold;
-    border: 2px solid #ddd;
+    border: none;
     border-radius: 12px;
-    background: #f8f9fa;
+    background: #f0f0f0;
     color: #333;
+    outline: none;
+    cursor: text;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+#quantity::-webkit-outer-spin-button,
+#quantity::-webkit-inner-spin-button,
+#cupQuantity::-webkit-outer-spin-button,
+#cupQuantity::-webkit-inner-spin-button,
+#gadbadQuantity::-webkit-outer-spin-button,
+#gadbadQuantity::-webkit-inner-spin-button,
+#dollyQuantity::-webkit-outer-spin-button,
+#dollyQuantity::-webkit-inner-spin-button,
+#coneQuantity::-webkit-outer-spin-button,
+#coneQuantity::-webkit-inner-spin-button,
+#scoopQuantity::-webkit-outer-spin-button,
+#scoopQuantity::-webkit-inner-spin-button,
+#chocbarQuantity::-webkit-outer-spin-button,
+#chocbarQuantity::-webkit-inner-spin-button,
+#familyQuantity::-webkit-outer-spin-button,
+#familyQuantity::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 .price-display {
@@ -685,4 +716,21 @@ nav {
     .content p {
         font-size: 1rem;
     }
+}
+/* ========================
+   Hero Video Section
+   ======================== */
+.hero-video-section {
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+}
+
+.hero-video {
+    width: 100%;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    display: block;
+    max-height: 520px;
+    object-fit: cover;
 }
