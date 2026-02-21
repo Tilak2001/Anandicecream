@@ -22,6 +22,8 @@ media/
 
 # Environment variables
 .env
+.env.*
+.env.production
 
 Thumbs.db
 
