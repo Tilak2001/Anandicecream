@@ -8,6 +8,8 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #a8edea 100%);
     min-height: 100vh;
+    overflow-x: hidden;
+    max-width: 100%;
 }
 
 nav {
@@ -394,8 +396,8 @@ nav {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     background: rgba(0, 0, 0, 0.8);
     z-index: 1000;
     overflow-y: auto;
@@ -424,7 +426,7 @@ nav {
     background: white;
     border-radius: 25px;
     max-width: 800px;
-    width: 100%;
+    width: calc(100vw - 2rem);
     max-height: 90vh;
     overflow-y: auto;
     position: relative;
