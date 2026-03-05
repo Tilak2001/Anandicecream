@@ -132,7 +132,6 @@
             <button class="close-btn" onclick="closeProductPage()">×</button>
 
             <div class="product-header">
-                <div class="product-icon-large">🍡</div>
                 <h1 class="product-title-large">Kulfi</h1>
             </div>
 
@@ -174,16 +173,13 @@
                     </div>
                 </div>
 
-                <!-- Price Display -->
-                <div class="price-display">
-                    <div class="price-label">Total Price</div>
-                    <div class="price-amount" id="totalPrice">₹30</div>
+                <div class="price-cart-row">
+                    <div class="price-display">
+                        <div class="price-label">Total Price</div>
+                        <div class="price-amount" id="totalPrice">₹30</div>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart()">🛒 Add to Cart</button>
                 </div>
-
-                <!-- Add to Cart Button -->
-                <button class="add-to-cart-btn" onclick="addToCart()">
-                    🛒 Add to Cart
-                </button>
             </div>
         </div>
     </div>
@@ -194,7 +190,6 @@
             <button class="close-btn" onclick="closeCupPage()">×</button>
 
             <div class="product-header">
-                <div class="product-icon-large">🥤</div>
                 <h1 class="product-title-large">Cup Ice Cream</h1>
             </div>
 
@@ -236,16 +231,13 @@
                     </div>
                 </div>
 
-                <!-- Price Display -->
-                <div class="price-display">
-                    <div class="price-label">Total Price</div>
-                    <div class="price-amount" id="cupTotalPrice">₹10</div>
+                <div class="price-cart-row">
+                    <div class="price-display">
+                        <div class="price-label">Total Price</div>
+                        <div class="price-amount" id="cupTotalPrice">₹10</div>
+                    </div>
+                    <button class="add-to-cart-btn" id="cupCartBtn" onclick="addCupToCart()">🛒 Add to Cart</button>
                 </div>
-
-                <!-- Add to Cart Button -->
-                <button class="add-to-cart-btn" id="cupCartBtn" onclick="addCupToCart()">
-                    🛒 Add to Cart
-                </button>
             </div>
         </div>
     </div>
@@ -256,7 +248,6 @@
             <button class="close-btn" onclick="closeGadbadPage()">&times;</button>
 
             <div class="product-header">
-                <div class="product-icon-large">🍨</div>
                 <h1 class="product-title-large">Gadbad</h1>
             </div>
 
@@ -298,16 +289,14 @@
                     </div>
                 </div>
 
-                <!-- Price Display -->
-                <div class="price-display">
-                    <div class="price-label">Total Price</div>
-                    <div class="price-amount" id="gadbadTotalPrice">₹20</div>
+                <div class="price-cart-row">
+                    <div class="price-display">
+                        <div class="price-label">Total Price</div>
+                        <div class="price-amount" id="gadbadTotalPrice">₹20</div>
+                    </div>
+                    <button class="add-to-cart-btn" id="gadbadCartBtn" onclick="addGadbadToCart()">🛒 Add to
+                        Cart</button>
                 </div>
-
-                <!-- Add to Cart Button -->
-                <button class="add-to-cart-btn" id="gadbadCartBtn" onclick="addGadbadToCart()">
-                    🛒 Add to Cart
-                </button>
             </div>
         </div>
     </div>
@@ -318,7 +307,6 @@
         <div class="product-page">
             <button class="close-btn" onclick="closeDollyPage()">&times;</button>
             <div class="product-header">
-                <div class="product-icon-large">&#127853;</div>
                 <h1 class="product-title-large">Dolly</h1>
             </div>
             <div class="product-body">
@@ -345,13 +333,13 @@
                         <button class="quantity-btn" onclick="increaseDollyQty()">+</button>
                     </div>
                 </div>
-                <div class="price-display">
-                    <div class="price-label">Total Price</div>
-                    <div class="price-amount" id="dollyTotalPrice">&#8377;20</div>
+                <div class="price-cart-row">
+                    <div class="price-display">
+                        <div class="price-label">Total Price</div>
+                        <div class="price-amount" id="dollyTotalPrice">&#8377;20</div>
+                    </div>
+                    <button class="add-to-cart-btn" id="dollyCartBtn" onclick="addDollyToCart()">Add to Cart</button>
                 </div>
-                <button class="add-to-cart-btn" id="dollyCartBtn" onclick="addDollyToCart()">
-                    Add to Cart
-                </button>
             </div>
         </div>
     </div>
@@ -361,7 +349,6 @@
         <div class="product-page">
             <button class="close-btn" onclick="closeConePage()">&times;</button>
             <div class="product-header">
-                <div class="product-icon-large">&#127846;</div>
                 <h1 class="product-title-large">Cone</h1>
             </div>
             <div class="product-body">
@@ -403,13 +390,13 @@
                         <button class="quantity-btn" onclick="increaseConeQty()">+</button>
                     </div>
                 </div>
-                <div class="price-display">
-                    <div class="price-label">Total Price</div>
-                    <div class="price-amount" id="coneTotalPrice">&#8377;40</div>
+                <div class="price-cart-row">
+                    <div class="price-display">
+                        <div class="price-label">Total Price</div>
+                        <div class="price-amount" id="coneTotalPrice">&#8377;40</div>
+                    </div>
+                    <button class="add-to-cart-btn" id="coneCartBtn" onclick="addConeToCart()">Add to Cart</button>
                 </div>
-                <button class="add-to-cart-btn" id="coneCartBtn" onclick="addConeToCart()">
-                    Add to Cart
-                </button>
             </div>
         </div>
     </div>
@@ -419,7 +406,6 @@
         <div class="product-page">
             <button class="close-btn" onclick="closeScoopPage()">&times;</button>
             <div class="product-header">
-                <div class="product-icon-large">&#127847;</div>
                 <h1 class="product-title-large">Scoop Ice Cream</h1>
             </div>
             <div class="product-body">
@@ -486,13 +472,13 @@
                         <button class="quantity-btn" onclick="increaseScoopQty()">+</button>
                     </div>
                 </div>
-                <div class="price-display">
-                    <div class="price-label">Total Price</div>
-                    <div class="price-amount" id="scoopTotalPrice">&#8377;20</div>
+                <div class="price-cart-row">
+                    <div class="price-display">
+                        <div class="price-label">Total Price</div>
+                        <div class="price-amount" id="scoopTotalPrice">&#8377;20</div>
+                    </div>
+                    <button class="add-to-cart-btn" id="scoopCartBtn" onclick="addScoopToCart()">Add to Cart</button>
                 </div>
-                <button class="add-to-cart-btn" id="scoopCartBtn" onclick="addScoopToCart()">
-                    Add to Cart
-                </button>
             </div>
         </div>
     </div>
@@ -502,7 +488,6 @@
         <div class="product-page">
             <button class="close-btn" onclick="closeChocbarPage()">&times;</button>
             <div class="product-header">
-                <div class="product-icon-large">&#127851;</div>
                 <h1 class="product-title-large">Chocbar</h1>
             </div>
             <div class="product-body">
@@ -529,13 +514,14 @@
                         <button class="quantity-btn" onclick="increaseChocbarQty()">+</button>
                     </div>
                 </div>
-                <div class="price-display">
-                    <div class="price-label">Total Price</div>
-                    <div class="price-amount" id="chocbarTotalPrice">&#8377;20</div>
+                <div class="price-cart-row">
+                    <div class="price-display">
+                        <div class="price-label">Total Price</div>
+                        <div class="price-amount" id="chocbarTotalPrice">&#8377;20</div>
+                    </div>
+                    <button class="add-to-cart-btn" id="chocbarCartBtn" onclick="addChocbarToCart()">Add to
+                        Cart</button>
                 </div>
-                <button class="add-to-cart-btn" id="chocbarCartBtn" onclick="addChocbarToCart()">
-                    Add to Cart
-                </button>
             </div>
         </div>
     </div>
@@ -545,7 +531,6 @@
         <div class="product-page">
             <button class="close-btn" onclick="closeFamilyPage()">&times;</button>
             <div class="product-header">
-                <div class="product-icon-large">&#128230;</div>
                 <h1 class="product-title-large">Family Pack</h1>
             </div>
             <div class="product-body">
@@ -572,13 +557,13 @@
                         <button class="quantity-btn" onclick="increaseFamilyQty()">+</button>
                     </div>
                 </div>
-                <div class="price-display">
-                    <div class="price-label">Total Price</div>
-                    <div class="price-amount" id="familyTotalPrice">&#8377;120</div>
+                <div class="price-cart-row">
+                    <div class="price-display">
+                        <div class="price-label">Total Price</div>
+                        <div class="price-amount" id="familyTotalPrice">&#8377;120</div>
+                    </div>
+                    <button class="add-to-cart-btn" id="familyCartBtn" onclick="addFamilyToCart()">Add to Cart</button>
                 </div>
-                <button class="add-to-cart-btn" id="familyCartBtn" onclick="addFamilyToCart()">
-                    Add to Cart
-                </button>
             </div>
         </div>
     </div>
