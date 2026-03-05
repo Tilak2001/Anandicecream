@@ -406,7 +406,8 @@ nav {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
+    padding: 1rem;
+    box-sizing: border-box;
 }
 
 @keyframes fadeIn {
@@ -424,9 +425,12 @@ nav {
     border-radius: 25px;
     max-width: 800px;
     width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
     position: relative;
     animation: slideUp 0.4s ease;
     box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+    box-sizing: border-box;
 }
 
 @keyframes slideUp {
@@ -498,8 +502,8 @@ nav {
 
 .flavor-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 0.75rem;
 }
 
 .flavor-option {
@@ -698,7 +702,7 @@ nav {
     background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
 }
 
-/* Mobile Responsive */
+/* ── Responsive: Tablet (max 768px) ── */
 @media (max-width: 768px) {
     .nav-menu {
         gap: 1rem;
@@ -715,6 +719,127 @@ nav {
 
     .content p {
         font-size: 1rem;
+    }
+
+    /* Modal */
+    .product-modal.active {
+        padding: 0.75rem;
+        align-items: flex-end;
+    }
+
+    .product-page {
+        border-radius: 20px 20px 0 0;
+        max-height: 92vh;
+    }
+
+    .product-header {
+        padding: 1.5rem 1rem;
+    }
+
+    .product-icon-large {
+        font-size: 3.5rem;
+    }
+
+    .product-title-large {
+        font-size: 1.8rem;
+    }
+
+    .product-body {
+        padding: 1.25rem;
+    }
+
+    .flavor-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.6rem;
+    }
+
+    .flavor-option {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .flavor-emoji {
+        font-size: 1.5rem;
+    }
+
+    .size-options {
+        flex-direction: column;
+    }
+
+    .size-option {
+        min-width: unset;
+    }
+
+    /* Cards grid */
+    .cards-grid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 1rem;
+    }
+
+    .card-image {
+        height: 180px;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+    }
+}
+
+/* ── Responsive: Mobile (max 480px) ── */
+@media (max-width: 480px) {
+    .product-modal.active {
+        padding: 0;
+        align-items: flex-end;
+    }
+
+    .product-page {
+        border-radius: 18px 18px 0 0;
+        max-height: 95vh;
+    }
+
+    .product-title-large {
+        font-size: 1.5rem;
+    }
+
+    .product-body {
+        padding: 1rem;
+    }
+
+    .flavor-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+
+    .option-label {
+        font-size: 1.1rem;
+    }
+
+    .quantity-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+
+    .cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+
+    .card-image {
+        height: 140px;
+        font-size: 4rem;
+    }
+
+    .card-title {
+        font-size: 1.1rem;
+    }
+
+    .card-description {
+        font-size: 0.8rem;
+    }
+
+    .nav-menu li a {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.5rem;
     }
 }
 
