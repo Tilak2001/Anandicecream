@@ -470,24 +470,24 @@ nav {
 
 .product-header {
     background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
-    padding: 3rem 2rem;
+    padding: 1.25rem 2rem;
     border-radius: 25px 25px 0 0;
     text-align: center;
 }
 
 .product-icon-large {
-    font-size: 5rem;
-    margin-bottom: 1rem;
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
 }
 
 .product-title-large {
-    font-size: 2.5rem;
+    font-size: 1.8rem;
     color: #333;
     font-weight: bold;
 }
 
 .product-body {
-    padding: 2.5rem;
+    padding: 1.5rem;
 }
 
 .option-section {
