@@ -101,6 +101,23 @@
         .stat-card.delivered {
             background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
             color: white;
+            cursor: pointer;
+        }
+
+        .stat-card.delivered:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(116, 185, 255, 0.4);
+        }
+
+        .stat-card.shipped {
+            background: linear-gradient(135deg, #e67e22 0%, #f39c12 100%);
+            color: white;
+            cursor: pointer;
+        }
+
+        .stat-card.shipped:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(230, 126, 34, 0.4);
         }
 
         .stat-card.revenue {
@@ -267,8 +284,14 @@
                 <div class="stat-value">{{ confirmed_orders }}</div>
             </div>
 
-            <div class="stat-card delivered">
+            <div class="stat-card shipped" onclick="window.location.href='out-for-delivery.html'">
                 <div class="stat-icon">🚚</div>
+                <div class="stat-label">Out for Delivery</div>
+                <div class="stat-value">{{ shipped_orders }}</div>
+            </div>
+
+            <div class="stat-card delivered" onclick="window.location.href='delivered-orders.html'">
+                <div class="stat-icon">✅</div>
                 <div class="stat-label">Delivered Orders</div>
                 <div class="stat-value">{{ delivered_orders }}</div>
             </div>

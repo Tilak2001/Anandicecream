@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from .models import Order
 from .serializers import OrderSerializer, OrderCreateSerializer
-from .utils import generate_order_id, send_order_email, send_order_acceptance_email, send_order_rejection_email, send_delivery_confirmation_email, send_cancellation_email
+from .utils import generate_order_id, send_order_email, send_order_acceptance_email, send_order_rejection_email, send_delivery_confirmation_email, send_cancellation_email, send_shipment_email
 import json
 
 
@@ -221,6 +221,7 @@ def admin_dashboard_view(request):
     total_orders = orders.count()
     pending_orders = orders.filter(status='pending').count()
     confirmed_orders = orders.filter(status='confirmed').count()
+    shipped_orders = orders.filter(status='shipped').count()
     delivered_orders = orders.filter(status='delivered').count()
     
     # Calculate revenue
@@ -232,6 +233,7 @@ def admin_dashboard_view(request):
         'total_orders': total_orders,
         'pending_orders': pending_orders,
         'confirmed_orders': confirmed_orders,
+        'shipped_orders': shipped_orders,
         'delivered_orders': delivered_orders,
         'total_revenue': total_revenue,
     }
@@ -269,6 +271,36 @@ def confirmed_orders_view(request):
     }
     
     return render(request, 'confirmed_orders.html', context)
+
+
+def out_for_delivery_view(request):
+    """Out for delivery orders page - requires authentication"""
+    if not request.session.get('is_admin'):
+        return redirect('admin_login')
+    
+    shipped_orders = Order.objects.filter(status='shipped').order_by('-created_at')
+    
+    context = {
+        'admin_username': request.session.get('admin_username', 'Admin'),
+        'shipped_orders': shipped_orders,
+    }
+    
+    return render(request, 'out_for_delivery.html', context)
+
+
+def delivered_orders_view(request):
+    """Delivered orders page - requires authentication"""
+    if not request.session.get('is_admin'):
+        return redirect('admin_login')
+    
+    delivered_orders = Order.objects.filter(status='delivered').order_by('-created_at')
+    
+    context = {
+        'admin_username': request.session.get('admin_username', 'Admin'),
+        'delivered_orders': delivered_orders,
+    }
+    
+    return render(request, 'delivered_orders.html', context)
 
 
 @csrf_exempt
@@ -337,6 +369,26 @@ def update_order_status(request, order_id):
                         'order_id': order.order_id,
                         'status': order.status,
                         'payment_status': order.payment_status
+                    }
+                })
+                
+            elif action == 'ship':
+                # Mark order as out for delivery
+                order.status = 'shipped'
+                order.save()
+                
+                # Send shipment notification email to customer
+                try:
+                    send_shipment_email(order)
+                except Exception as email_error:
+                    print(f"[ERROR] Failed to send shipment email: {email_error}")
+                
+                return JsonResponse({
+                    'success': True,
+                    'message': 'Order marked as out for delivery',
+                    'order': {
+                        'order_id': order.order_id,
+                        'status': order.status
                     }
                 })
                 

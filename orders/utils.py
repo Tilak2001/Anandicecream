@@ -278,6 +278,114 @@ def send_order_acceptance_email(order):
         return False
 
 
+def send_shipment_email(order):
+    """
+    Send shipment notification email to customer when order is out for delivery.
+    Includes order details and estimated delivery within 2 hours.
+    """
+    try:
+        subject = f"🚚 Your Order is Out for Delivery! - Anand Ice Cream (Order #{order.order_id})"
+
+        # Build items HTML
+        items_html = ""
+        for item in order.items:
+            product = item.get('product', 'N/A')
+            flavor = item.get('flavor', 'N/A')
+            qty = item.get('quantity', 1)
+            price = item.get('price', 0)
+            items_html += f"""
+                <div style="padding: 10px 0; border-bottom: 1px solid #ffe0b2; display: flex; justify-content: space-between;">
+                    <span><strong>{product}</strong> ({flavor}) × {qty}</span>
+                    <span style="color: #e67e22; font-weight: bold;">₹{price}</span>
+                </div>
+            """
+
+        html_message = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }}
+                .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                .header {{ background: linear-gradient(135deg, #e67e22 0%, #f39c12 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                .content {{ background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px; }}
+                .eta-box {{ background: linear-gradient(135deg, #e67e22 0%, #f39c12 100%); color: white; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center; }}
+                .order-box {{ background: white; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #e67e22; }}
+                .items-box {{ background: white; padding: 20px; border-radius: 10px; margin: 20px 0; }}
+                .footer {{ text-align: center; margin-top: 20px; color: #999; font-size: 12px; }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <div style="font-size: 48px; margin-bottom: 10px;">🚚</div>
+                    <h1 style="margin: 0;">Your Order is On the Way!</h1>
+                    <p style="margin: 10px 0 0 0; opacity: 0.9;">Get ready to enjoy your ice cream!</p>
+                </div>
+
+                <div class="content">
+                    <p style="font-size: 16px;">Dear <strong>{order.full_name}</strong>,</p>
+
+                    <p style="font-size: 15px; color: #555;">
+                        Great news! 🎉 Your order has been <strong style="color: #e67e22;">dispatched</strong> and is on its way to you.
+                    </p>
+
+                    <div class="eta-box">
+                        <div style="font-size: 32px; margin-bottom: 8px;">⏰</div>
+                        <h2 style="margin: 0 0 8px 0;">Estimated Delivery</h2>
+                        <p style="font-size: 18px; margin: 0; font-weight: bold;">Today, within 2 Hours</p>
+                    </div>
+
+                    <div class="order-box">
+                        <h3 style="margin-top: 0; color: #e67e22;">📦 Order Details</h3>
+                        <p style="margin: 6px 0;"><strong>Order ID:</strong> {order.order_id}</p>
+                        <p style="margin: 6px 0;"><strong>Total Amount:</strong> ₹{order.total_amount}</p>
+                        <p style="margin: 6px 0;"><strong>Delivery Address:</strong> {order.delivery_address}, {order.pincode}</p>
+                    </div>
+
+                    <div class="items-box">
+                        <h3 style="margin-top: 0; color: #333;">🍦 Your Items</h3>
+                        {items_html}
+                        <div style="margin-top: 12px; text-align: right; font-size: 16px;">
+                            <strong style="color: #e67e22;">Total: ₹{order.total_amount}</strong>
+                        </div>
+                    </div>
+
+                    <p style="font-size: 14px; color: #666; text-align: center;">
+                        Please be available at your delivery address.<br>
+                        For any queries, call us at <strong>6362254344</strong>
+                    </p>
+
+                    <p style="font-size: 14px; color: #666; text-align: center; margin-top: 20px;">
+                        Thank you for choosing <strong>Anand Ice Cream</strong>! 🍦
+                    </p>
+                </div>
+
+                <div class="footer">
+                    <p>This is an automated email from Anand Ice Cream ordering system.</p>
+                    <p>Email: anandicecream@gmail.com | Phone: 6362254344</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+
+        email = EmailMessage(
+            subject=subject,
+            body=html_message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[order.email],
+        )
+        email.content_subtype = 'html'
+        email.send()
+        print(f"[SUCCESS] Shipment email sent to {order.email} for order: {order.order_id}")
+        return True
+
+    except Exception as e:
+        print(f"[ERROR] Error sending shipment email: {e}")
+        return False
+
+
 def send_order_rejection_email(order):
     """
     Send order rejection email to customer with refund information

@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmed Orders - Anand Ice Cream</title>
+    <title>Delivered Orders - Anand Ice Cream</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <style>
         .confirmed-container {
@@ -38,9 +38,9 @@
             border-radius: 10px;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s ease;
             text-decoration: none;
             display: inline-block;
+            transition: all 0.3s ease;
         }
 
         .back-btn:hover {
@@ -54,12 +54,7 @@
             padding: 2rem;
             margin-bottom: 2rem;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .order-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            border-left: 6px solid #00b894;
         }
 
         .order-header {
@@ -86,7 +81,6 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 1.5rem;
-            margin-bottom: 1.5rem;
         }
 
         .detail-section {
@@ -132,54 +126,16 @@
             font-weight: bold;
             color: #00b894;
             text-align: right;
-            margin-top: 1rem;
         }
 
-        .action-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 2px solid #f0f0f0;
-        }
-
-        .deliver-btn,
-        .cancel-btn {
-            flex: 1;
-            padding: 1rem;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
             font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .deliver-btn {
-            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
-            color: white;
-        }
-
-        .deliver-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(116, 185, 255, 0.3);
-        }
-
-        .cancel-btn {
-            background: linear-gradient(135deg, #ff6b9d 0%, #e84393 100%);
-            color: white;
-        }
-
-        .cancel-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 107, 157, 0.3);
-        }
-
-        .deliver-btn:disabled,
-        .cancel-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
         }
 
         .no-orders {
@@ -194,16 +150,6 @@
             font-size: 5rem;
             margin-bottom: 1rem;
         }
-
-        .status-badge {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
-            color: white;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: bold;
-        }
     </style>
 </head>
 
@@ -216,8 +162,6 @@
             </a>
             <ul class="nav-menu">
                 <li><a href="index.html">Home</a></li>
-                <li><a href="#about">About Us</a></li>
-                <li><a href="#contact">Contact</a></li>
                 <li><a href="admin-dashboard.html" class="active">Admin</a></li>
             </ul>
             <a href="cart.html" class="cart-icon">
@@ -229,18 +173,18 @@
 
     <div class="confirmed-container">
         <div class="page-header">
-            <h1 class="page-title">✅ Confirmed Orders</h1>
+            <h1 class="page-title">✅ Delivered Orders</h1>
             <a href="admin-dashboard.html" class="back-btn">← Back to Dashboard</a>
         </div>
 
-        {% if confirmed_orders %}
-        {% for order in confirmed_orders %}
+        {% if delivered_orders %}
+        {% for order in delivered_orders %}
         <div class="order-card" id="order-{{ order.order_id }}">
             <div class="order-header">
                 <div>
                     <div class="order-id">Order #{{ order.order_id }}</div>
                     <div class="order-date">{{ order.order_date|date:"F d, Y at h:i A" }}</div>
-                    <span class="status-badge">✓ Confirmed</span>
+                    <span class="status-badge">✅ Delivered</span>
                 </div>
                 <div class="total-amount">₹{{ order.total_amount }}</div>
             </div>
@@ -252,7 +196,7 @@
                     <div class="detail-item"><strong>Email:</strong> {{ order.email }}</div>
                     <div class="detail-item"><strong>Phone:</strong> {{ order.phone }}</div>
                     {% if order.alternate_phone %}
-                    <div class="detail-item"><strong>Alternate Phone:</strong> {{ order.alternate_phone }}</div>
+                    <div class="detail-item"><strong>Alternate:</strong> {{ order.alternate_phone }}</div>
                     {% endif %}
                     <div class="detail-item"><strong>Address:</strong> {{ order.delivery_address }}</div>
                     <div class="detail-item"><strong>Pincode:</strong> {{ order.pincode }}</div>
@@ -273,67 +217,22 @@
                     <div class="detail-title">💳 Payment Information</div>
                     <div class="detail-item"><strong>Payment Status:</strong> {{ order.get_payment_status_display }}
                     </div>
-                    <div class="detail-item"><strong>Confirmed Date:</strong> {{ order.updated_at|date:"F d, Y at h:i A"
+                    <div class="detail-item"><strong>Delivered On:</strong> {{ order.updated_at|date:"F d, Y at h:i A"
                         }}</div>
                 </div>
-            </div>
-
-            <div class="action-buttons">
-                <button class="deliver-btn" onclick="handleOrderAction('{{ order.order_id }}', 'ship')">
-                    🚚 Out for Delivery
-                </button>
-                <button class="cancel-btn" onclick="handleOrderAction('{{ order.order_id }}', 'cancel')">
-                    ❌ Cancel Order
-                </button>
             </div>
         </div>
         {% endfor %}
         {% else %}
         <div class="no-orders">
-            <div class="no-orders-icon">📭</div>
-            <h2>No Confirmed Orders</h2>
-            <p>There are no confirmed orders waiting for delivery!</p>
+            <div class="no-orders-icon">📦</div>
+            <h2>No Delivered Orders</h2>
+            <p>No orders have been delivered yet!</p>
         </div>
         {% endif %}
     </div>
 
     <script>
-        async function handleOrderAction(orderId, action) {
-            const confirmText = action === 'ship'
-                ? 'Mark this order as OUT FOR DELIVERY?\n\nIt will move to the Out for Delivery section.'
-                : 'CANCEL this order?\n\nThe customer will receive a cancellation email.';
-
-            if (!confirm(confirmText)) return;
-
-            const orderCard = document.getElementById(`order-${orderId}`);
-            const buttons = orderCard.querySelectorAll('button');
-            buttons.forEach(btn => btn.disabled = true);
-
-            try {
-                const response = await fetch(`/api/orders/${orderId}/update-status/`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: action })
-                });
-                const data = await response.json();
-
-                if (data.success) {
-                    alert(action === 'ship' ? '🚚 Order is now Out for Delivery!' : '✅ Order cancelled!');
-                    orderCard.style.opacity = '0';
-                    setTimeout(() => {
-                        orderCard.remove();
-                        if (document.querySelectorAll('.order-card').length === 0) location.reload();
-                    }, 500);
-                } else {
-                    alert(`❌ Error: ${data.message}`);
-                    buttons.forEach(btn => btn.disabled = false);
-                }
-            } catch (error) {
-                alert('❌ An error occurred.');
-                buttons.forEach(btn => btn.disabled = false);
-            }
-        }
-
         function updateCartCount() {
             const cart = localStorage.getItem('anandIceCreamCart');
             const cartArray = cart ? JSON.parse(cart) : [];
