@@ -412,12 +412,12 @@
     <!-- Inject Django static URLs into JS safely -->
     <script>
         const CUP_DATA = {
-            'Butterscotch': { img: '{% static "asset/icimg/cup/Butterscotch.png" %}', price: 30 },
-            'Chocolate': { img: '{% static "asset/icimg/cup/chocolate.png" %}', price: 35 },
-            'Vanilla': { img: '{% static "asset/icimg/cup/vanilla.png" %}', price: 30 },
-            'Strawberry': { img: '{% static "asset/icimg/cup/strawberry.png" %}', price: 30 },
-            'Kesar Pista': { img: '{% static "asset/icimg/cup/kesarpista.png" %}', price: 35 },
-            'Mango': { img: '{% static "asset/icimg/cup/mango.png" %}', price: 30 }
+            'Butterscotch': { img: '{% static "asset/icimg/cup/Butterscotch.png" %}', price: 10 },
+            'Chocolate': { img: '{% static "asset/icimg/cup/chocolate.png" %}', price: 10 },
+            'Vanilla': { img: '{% static "asset/icimg/cup/vanilla.png" %}', price: 10 },
+            'Strawberry': { img: '{% static "asset/icimg/cup/strawberry.png" %}', price: 10 },
+            'Kesar Pista': { img: '{% static "asset/icimg/cup/kesarpista.png" %}', price: 10 },
+            'Mango': { img: '{% static "asset/icimg/cup/mango.png" %}', price: 10 }
         };
     </script>
 
@@ -470,7 +470,7 @@
                 <div class="divider"></div>
 
                 <div class="price-block">
-                    <span class="price-main" id="cupPagePrice">₹30</span>
+                    <span class="price-main" id="cupPagePrice">₹10</span>
                     <span class="price-per">per cup</span>
                 </div>
 
@@ -484,32 +484,32 @@
                         onclick="pickCupFlavor('Butterscotch')">
                         <img src="{% static 'asset/icimg/cup/Butterscotch.png' %}" alt="Butterscotch">
                         <div class="flavor-card-name">Butterscotch</div>
-                        <div class="flavor-card-price">₹30</div>
+                        <div class="flavor-card-price">₹10</div>
                     </div>
                     <div class="flavor-card" data-flavor="Chocolate" onclick="pickCupFlavor('Chocolate')">
                         <img src="{% static 'asset/icimg/cup/chocolate.png' %}" alt="Chocolate">
                         <div class="flavor-card-name">Chocolate</div>
-                        <div class="flavor-card-price">₹35</div>
+                        <div class="flavor-card-price">₹10</div>
                     </div>
                     <div class="flavor-card" data-flavor="Vanilla" onclick="pickCupFlavor('Vanilla')">
                         <img src="{% static 'asset/icimg/cup/vanilla.png' %}" alt="Vanilla">
                         <div class="flavor-card-name">Vanilla</div>
-                        <div class="flavor-card-price">₹30</div>
+                        <div class="flavor-card-price">₹10</div>
                     </div>
                     <div class="flavor-card" data-flavor="Strawberry" onclick="pickCupFlavor('Strawberry')">
                         <img src="{% static 'asset/icimg/cup/strawberry.png' %}" alt="Strawberry">
                         <div class="flavor-card-name">Strawberry</div>
-                        <div class="flavor-card-price">₹30</div>
+                        <div class="flavor-card-price">₹10</div>
                     </div>
                     <div class="flavor-card" data-flavor="Kesar Pista" onclick="pickCupFlavor('Kesar Pista')">
                         <img src="{% static 'asset/icimg/cup/kesarpista.png' %}" alt="Kesar Pista">
                         <div class="flavor-card-name">Kesar Pista</div>
-                        <div class="flavor-card-price">₹35</div>
+                        <div class="flavor-card-price">₹10</div>
                     </div>
                     <div class="flavor-card" data-flavor="Mango" onclick="pickCupFlavor('Mango')">
                         <img src="{% static 'asset/icimg/cup/mango.png' %}" alt="Mango">
                         <div class="flavor-card-name">Mango</div>
-                        <div class="flavor-card-price">₹30</div>
+                        <div class="flavor-card-price">₹10</div>
                     </div>
                 </div>
 
@@ -522,7 +522,7 @@
                             oninput="cupQtyInput(this)">
                         <button class="qty-btn" onclick="cupIncQty()">+</button>
                     </div>
-                    <div class="qty-total">Total: <span id="cupTotalDisplay">₹30</span></div>
+                    <div class="qty-total">Total: <span id="cupTotalDisplay">₹10</span></div>
                 </div>
 
                 <!-- CTA -->
@@ -556,7 +556,7 @@
     <script>
         // ---- State ----
         let cupPageFlavor = 'Butterscotch';
-        let cupPageUnitPrice = 30;
+        let cupPageUnitPrice = 10;
         let cupPageQtyVal = 1;
 
         // ---- Pick Flavor ----
