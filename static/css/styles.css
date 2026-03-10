@@ -142,6 +142,33 @@ nav {
     margin-bottom: 2rem;
 }
 
+/* Hero Banner Section */
+.hero-banner-section {
+    width: 100%;
+    margin: 0 0 2rem 0;
+    animation: fadeInDown 0.8s ease;
+}
+
+.hero-banner {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Carousel Styles */
 .carousel-container {
     max-width: 1000px;

@@ -30,102 +30,15 @@
         </div>
     </nav>
 
-    <div class="content">
-        <h1>🍨 Welcome to Anand Ice Cream 🍨</h1>
-        <p>Discover the sweetest, creamiest ice cream in town! Handcrafted with love and the finest ingredients.</p>
+
+
+    <!-- Hero Banner Section -->
+    <div class="hero-banner-section">
+        <img class="hero-banner" src="{% static 'asset/anand_banner.png' %}"
+            alt="Anand Ice Cream - Discover Our Delicious Range!">
     </div>
 
-    <!-- Hero Video Section -->
-    <div class="hero-video-section">
-        <video class="hero-video" autoplay muted loop playsinline
-            src="{% static 'asset/video/Beach_Scene_with_Indian_Faces_and_Ice_Cream.mp4' %}" type="video/mp4">
-        </video>
-    </div>
 
-    <!-- Product Cards Section -->
-    <section class="products-section">
-        <h2 class="section-title">🍦 Our Ice Cream Collection 🍦</h2>
-        <div class="cards-grid">
-            <!-- Card 1: Kulfi -->
-            <div class="ice-cream-card" id="kulfiCard" onclick="openKulfiPage()">
-                <div class="card-image kulfi"><img src="{% static 'asset/icimg/kulfi.png' %}" alt="Kulfi"></div>
-                <div class="card-content">
-                    <div class="card-title">Kulfi</div>
-                    <div class="card-description">Traditional Indian frozen dessert with authentic flavors of cardamom,
-                        saffron & pistachios</div>
-                </div>
-            </div>
-
-            <!-- Card 2: Cup -->
-            <div class="ice-cream-card" id="cupCard" onclick="openCupPage()">
-                <div class="card-image cup"><img src="{% static 'asset/icimg/Cup.png' %}" alt="Cup Ice Cream"></div>
-                <div class="card-content">
-                    <div class="card-title">Cup Ice Cream</div>
-                    <div class="card-description">Creamy ice cream served in convenient cups - perfect for on-the-go
-                        enjoyment</div>
-                </div>
-            </div>
-
-            <!-- Card 3: Chocbar -->
-            <div class="ice-cream-card" id="chocbarCard" onclick="openChocbarPage()">
-                <div class="card-image chocbar">🍫</div>
-                <div class="card-content">
-                    <div class="card-title">Chocbar</div>
-                    <div class="card-description">Rich chocolate coated ice cream bar - a chocolate lover's dream come
-                        true</div>
-                </div>
-            </div>
-
-            <!-- Card 4: Dolly -->
-            <div class="ice-cream-card" id="dollyCard" onclick="openDollyPage()">
-                <div class="card-image dolly">🍭</div>
-                <div class="card-content">
-                    <div class="card-title">Dolly</div>
-                    <div class="card-description">Colorful ice lolly with fruity flavors - a refreshing treat for all
-                        ages</div>
-                </div>
-            </div>
-
-            <!-- Card 5: Cone -->
-            <div class="ice-cream-card" id="coneCard" onclick="window.location.href='cone.html'">
-                <div class="card-image cone"><img src="{% static 'asset/icimg/cone/full-cone.png' %}" alt="Cone"></div>
-                <div class="card-content">
-                    <div class="card-title">Cone</div>
-                    <div class="card-description">Classic crispy waffle cone filled with premium ice cream flavors</div>
-                </div>
-            </div>
-
-            <!-- Card 6: Gadbad -->
-            <div class="ice-cream-card" id="gadbadCard" onclick="openGadbadPage()">
-                <div class="card-image gadbad">🍨</div>
-                <div class="card-content">
-                    <div class="card-title">Gadbad</div>
-                    <div class="card-description">Spectacular layers of ice cream, fruits, nuts, jelly &amp; dry fruits
-                        - a
-                        complete dessert experience</div>
-                </div>
-            </div>
-
-            <!-- Card 7: Scoop -->
-            <div class="ice-cream-card" id="scoopCard" onclick="openScoopPage()">
-                <div class="card-image scoop">🍧</div>
-                <div class="card-content">
-                    <div class="card-title">Scoop Ice Cream</div>
-                    <div class="card-description">Hand-scooped premium ice cream with endless flavor combinations</div>
-                </div>
-            </div>
-
-            <!-- Card 8: Family Cup -->
-            <div class="ice-cream-card" id="familyCard" onclick="openFamilyPage()">
-                <div class="card-image family">📦</div>
-                <div class="card-content">
-                    <div class="card-title">Family Pack</div>
-                    <div class="card-description">Large family-sized tubs perfect for sharing special moments with loved
-                        ones</div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Kulfi Product Page Modal -->
     <div class="product-modal" id="kulfiModal">
