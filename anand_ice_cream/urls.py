@@ -21,6 +21,8 @@ urlpatterns = [
     path('cone.html', TemplateView.as_view(template_name='cone.html'), name='cone'),
     path('cup.html', TemplateView.as_view(template_name='cup.html'), name='cup'),
     path('chocobar.html', TemplateView.as_view(template_name='chocobar.html'), name='chocobar'),
+    path('kulfi.html', TemplateView.as_view(template_name='kulfi.html'), name='kulfi'),
+    path('gadbad.html', TemplateView.as_view(template_name='gadbad.html'), name='gadbad'),
     # Admin pages
     path('admin-login.html', order_views.admin_login_view, name='admin_login'),
     path('admin-dashboard.html', order_views.admin_dashboard_view, name='admin_dashboard'),

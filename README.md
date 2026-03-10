@@ -352,4 +352,7 @@ For support or queries:
 ## Contributors
 hi bsdman
 
+readme edited
+
+
 - Tilak Pednekar
