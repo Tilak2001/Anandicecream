@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Jobs in Karwar - Karwarian.shop{% endblock %}
+
+{% block content %}
+<section class="page-header bg-primary text-white py-5">
+    <div class="container">
+        <h1 class="display-4 fw-bold" data-i18n="jobs.title">Job Opportunities</h1>
+        <p class="lead" data-i18n="jobs.subtitle">Find your next career opportunity in Karwar</p>
+    </div>
+</section>
+
+<section class="py-4 bg-light">
+    <div class="container">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <select name="category" class="form-select">
+                    <option value="" data-i18n="jobs.all_categories">All Categories</option>
+                    {% for category in categories %}
+                    <option value="{{ category.slug }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="type" class="form-select">
+                    <option value="" data-i18n="jobs.all_types">All Job Types</option>
+                    <option value="full_time" data-i18n="jobs.type.full_time">Full Time</option>
+                    <option value="part_time" data-i18n="jobs.type.part_time">Part Time</option>
+                    <option value="contract" data-i18n="jobs.type.contract">Contract</option>
+                    <option value="internship" data-i18n="jobs.type.internship">Internship</option>
+                    <option value="freelance" data-i18n="jobs.type.freelance">Freelance</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <input type="text" name="location" class="form-control" data-i18n-placeholder="jobs.location_ph" placeholder="Location">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search"></i> <span data-i18n="common.search">Search</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        {% if jobs %}
+        <div class="row g-4">
+            {% for job in jobs %}
+            <div class="col-md-6">
+                <div class="card job-card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                {% if job.is_featured %}
+                                <span class="badge bg-warning text-dark mb-2" data-i18n="common.featured">Featured</span>
+                                {% endif %}
+                                <span class="badge bg-primary mb-2">{{ job.get_job_type_display }}</span>
+                            </div>
+                            {% if job.company_logo %}
+                            <img src="{{ job.company_logo.url }}" alt="{{ job.company_name }}" style="width: 50px; height: 50px; object-fit: contain;">
+                            {% endif %}
+                        </div>
+                        <h5 class="card-title fw-bold">{{ job.title }}</h5>
+                        <p class="text-muted mb-2"><i class="fas fa-building"></i> {{ job.company_name }}</p>
+                        <p class="text-muted mb-2"><i class="fas fa-map-marker-alt"></i> {{ job.location }}</p>
+                        {% if job.salary_range %}
+                        <p class="text-success mb-3"><i class="fas fa-money-bill-wave"></i> {{ job.salary_range }}</p>
+                        {% endif %}
+                        <p class="card-text">{{ job.description|truncatewords:25 }}</p>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <small class="text-muted"><i class="fas fa-calendar"></i> {{ job.created_at|date:"M d, Y" }}</small>
+                            <a href="{% url 'jobs:detail' job.slug %}" class="btn btn-sm btn-primary">
+                                <span data-i18n="common.view_details">View Details</span> <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-briefcase fa-5x text-muted mb-3"></i>
+            <h3 data-i18n="jobs.no_jobs">No jobs found</h3>
+            <p class="text-muted" data-i18n="jobs.no_jobs_hint">Try adjusting your search filters</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+.page-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.job-card { transition: transform 0.3s ease, box-shadow 0.3s ease; border: none; }
+.job-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important; }
+</style>
+{% endblock %}

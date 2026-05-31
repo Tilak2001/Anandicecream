@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Post a Listing - Karwarian.shop{% endblock %}
+
+{% block content %}
+<section class="page-header bg-primary text-white py-5">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold" data-i18n="form.page_title">Post a New Listing</h1>
+        <p class="lead" data-i18n="form.page_subtitle">Add your service, product, or second-hand items to Karwarian marketplace</p>
+    </div>
+</section>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                <div class="card-header bg-dark text-white p-4">
+                    <h4 class="mb-0 fw-bold"><i class="fas fa-edit me-2"></i> <span data-i18n="form.card_title">Listing Details</span></h4>
+                </div>
+                <div class="card-body p-5">
+                    
+                    {% if messages %}
+                    <div class="messages mb-4">
+                        {% for message in messages %}
+                        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <input type="hidden" name="function_segment" id="function_segment" value="{{ preset_function_segment }}">
+                        <input type="hidden" name="function_subcategory" id="function_subcategory" value="{{ preset_function_subcategory }}">
+                        
+                        <div class="row g-4">
+                            <!-- Category & Type -->
+                            <div class="col-md-6">
+                                <label for="category" class="form-label fw-bold"><span data-i18n="form.category">Category</span> <span class="text-danger">*</span></label>
+                                <select name="category" id="category" class="form-select form-select-lg" required>
+                                    <option value="" selected disabled data-i18n="form.select_category">Select Category</option>
+                                    {% for category in categories %}
+                                    <option value="{{ category.id }}">{{ category.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="invalid-feedback">Please select a category.</div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="service_type" class="form-label fw-bold"><span data-i18n="form.type">Listing Type</span> <span class="text-danger">*</span></label>
+                                <select name="service_type" id="service_type" class="form-select form-select-lg" required>
+                                    <option value="" selected disabled data-i18n="form.select_type">Select Type</option>
+                                    {% for value, name in service_types %}
+                                    <option value="{{ value }}"{% if preset_service_type == value %} selected{% endif %}>{{ name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="invalid-feedback">Please select a listing type.</div>
+                            </div>
+
+                            <!-- Title -->
+                            <div class="col-12">
+                                <label for="title" class="form-label fw-bold"><span data-i18n="form.title">Listing Title / Item Name</span> <span class="text-danger">*</span></label>
+                                <input type="text" name="title" id="title" class="form-control form-control-lg" placeholder="e.g. iPhone 13 Pro Max - 256GB - Blue" required>
+                                <div class="invalid-feedback">Please provide a listing title.</div>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="col-12">
+                                <label for="description" class="form-label fw-bold"><span data-i18n="form.description">Detailed Description</span> <span class="text-danger">*</span></label>
+                                <textarea name="description" id="description" rows="6" class="form-control" placeholder="Describe the item or service in detail, including specifications, condition, age, etc." required></textarea>
+                                <div class="invalid-feedback">Please provide a description.</div>
+                            </div>
+
+                            <!-- Pricing -->
+                            <div class="col-md-6">
+                                <label for="price" class="form-label fw-bold">Price (₹) <span class="text-muted">(Optional)</span></label>
+                                <input type="number" step="0.01" name="price" id="price" class="form-control form-control-lg" placeholder="e.g. 45000">
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="price_text" class="form-label fw-bold">Price Note <span class="text-muted">(Optional)</span></label>
+                                <input type="text" name="price_text" id="price_text" class="form-control form-control-lg" placeholder="e.g. Negotiable, Per Day, Starting from">
+                            </div>
+
+                            <!-- Images -->
+                            <div class="col-12">
+                                <label for="main_image" class="form-label fw-bold">Upload Listing Image</label>
+                                <div class="image-upload-box text-center p-4 border rounded-3 bg-light">
+                                    <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-2"></i>
+                                    <input type="file" name="main_image" id="main_image" class="form-control" accept="image/*" onchange="previewFile(event)">
+                                    <small class="text-muted d-block mt-2">Recommended: Square high-resolution images (Max 5MB)</small>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <img id="imagePreview" src="#" alt="Preview" class="img-thumbnail rounded-3 shadow-sm" style="display: none; max-height: 250px; object-fit: contain;">
+                                </div>
+                            </div>
+
+                            <!-- Contact Info Section -->
+                            <div class="col-12 mt-5">
+                                <h5 class="fw-bold border-bottom pb-2 text-primary"><i class="fas fa-address-card me-2"></i> <span data-i18n="form.contact_section">Contact & Location Info</span></h5>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="provider_name" class="form-label fw-bold">Your Name / Provider Name <span class="text-danger">*</span></label>
+                                <input type="text" name="provider_name" id="provider_name" class="form-control form-control-lg" placeholder="e.g. Rahul Naik" required>
+                                <div class="invalid-feedback">Please provide your name.</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="contact_phone" class="form-label fw-bold">Phone Number <span class="text-danger">*</span></label>
+                                <input type="tel" name="contact_phone" id="contact_phone" class="form-control form-control-lg" placeholder="e.g. 9876543210" required>
+                                <div class="invalid-feedback">Please provide a contact phone number.</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="contact_email" class="form-label fw-bold">Email Address <span class="text-muted">(Optional)</span></label>
+                                <input type="email" name="contact_email" id="contact_email" class="form-control form-control-lg" placeholder="e.g. contact@domain.com">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="whatsapp_number" class="form-label fw-bold">WhatsApp Number <span class="text-muted">(Optional)</span></label>
+                                <input type="tel" name="whatsapp_number" id="whatsapp_number" class="form-control form-control-lg" placeholder="e.g. 9876543210">
+                            </div>
+
+                            <div class="col-12">
+                                <label for="location" class="form-label fw-bold">Location / Neighborhood <span class="text-danger">*</span></label>
+                                <input type="text" name="location" id="location" class="form-control form-control-lg" placeholder="e.g. Kodibag, Karwar" required>
+                                <div class="invalid-feedback">Please provide a location.</div>
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="col-12 text-center mt-5">
+                                <button type="submit" class="btn btn-primary btn-lg px-5 py-3 fw-bold rounded-pill shadow">
+                                    <i class="fas fa-check-circle me-2"></i> Submit Listing for Moderation
+                                </button>
+                                <a href="{% url 'services:goods_hub' %}" class="btn btn-outline-secondary btn-lg px-5 py-3 fw-bold rounded-pill ms-3">
+                                    Cancel
+                                </a>
+                            </div>
+
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.page-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+.image-upload-box {
+    border: 2px dashed #ddd !important;
+    transition: border-color 0.3s ease;
+}
+.image-upload-box:hover {
+    border-color: #667eea !important;
+}
+</style>
+
+<script>
+// File Preview
+function previewFile(event) {
+    const input = event.target;
+    const preview = document.getElementById('imagePreview');
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'inline-block';
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        preview.style.display = 'none';
+    }
+}
+
+// Bootstrap Form Validation Validation
+(function () {
+  'use strict'
+  var forms = document.querySelectorAll('.needs-validation')
+  Array.prototype.slice.call(forms)
+    .forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+        form.classList.add('was-validated')
+      }, false)
+    })
+})()
+</script>
+{% endblock %}

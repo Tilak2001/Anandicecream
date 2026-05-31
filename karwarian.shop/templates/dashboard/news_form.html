@@ -1,0 +1,60 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}{{ action }} News Article{% endblock %}
+{% block nav_news_add %}{% if action == 'Add' %}active{% endif %}{% endblock %}
+
+{% block content %}
+<div class="topbar">
+    <h1>📰 {{ action }} News Article</h1>
+    <a href="{% url 'dashboard_news' %}" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back to News</a>
+</div>
+
+<div class="panel">
+    <div class="panel-body">
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label>Article Title</label>
+                <input type="text" name="title" class="form-control" placeholder="Enter article title" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Excerpt / Summary</label>
+                <input type="text" name="excerpt" class="form-control" placeholder="Brief 1-sentence summary" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Article Image URL</label>
+                <input type="url" name="image_url" class="form-control" placeholder="https://example.com/image.jpg">
+                <small style="color:var(--text2); font-size:0.75rem; margin-top:4px; display:block;">Provide a URL for the image asset</small>
+            </div>
+            
+            <div class="form-group">
+                <label>Content / Body</label>
+                <textarea name="content" class="form-control" style="min-height: 250px;" placeholder="Write news article content here..." required></textarea>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>News Source</label>
+                    <input type="text" name="source" class="form-control" placeholder="e.g. Karwar Connect">
+                </div>
+                
+                <div class="form-group" style="display: flex; gap: 30px; align-items: center; padding-top: 30px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" name="is_published" id="is_published" checked style="width: 18px; height: 18px; cursor: pointer;">
+                        <label for="is_published" style="margin-bottom: 0; cursor: pointer;">Publish Immediately</label>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" name="is_featured" id="is_featured" style="width: 18px; height: 18px; cursor: pointer;">
+                        <label for="is_featured" style="margin-bottom: 0; cursor: pointer;">Feature on Homepage</label>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Article</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

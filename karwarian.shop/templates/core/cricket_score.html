@@ -1,0 +1,374 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Live Cricket Score - Karwarian.shop{% endblock %}
+
+{% block content %}
+<div class="page-hero" style="background: linear-gradient(135deg, #1a5e2a 0%, #2d8f3b 50%, #1a202c 100%);">
+    <h1><i class="fas fa-baseball-ball"></i> <span data-i18n="cricket.title">Live Cricket Score</span></h1>
+    <p data-i18n="cricket.subtitle">Stay updated with live match scores and results</p>
+</div>
+
+<div class="cricket-page">
+    <!-- Live Matches Section -->
+    <div class="cricket-section">
+        <h2 class="cricket-heading"><i class="fas fa-circle live-dot"></i> <span data-i18n="cricket.live_heading">Live & Recent Matches</span></h2>
+        <div id="matchesContainer" class="matches-grid">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p data-i18n="cricket.loading">Loading live scores...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cricbuzz Widget Embed -->
+    <div class="cricket-section">
+        <h2 class="cricket-heading"><i class="fas fa-trophy"></i> <span data-i18n="cricket.scorecard">Scorecard</span></h2>
+        <div class="cricbuzz-embed">
+            <iframe 
+                src="https://www.cricbuzz.com/cricket-match/live-scores" 
+                width="100%" 
+                height="600" 
+                frameborder="0"
+                style="border-radius: 12px; border: 1px solid var(--border-color);"
+                title="Live Cricket Scores"
+                sandbox="allow-scripts allow-same-origin">
+            </iframe>
+        </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="cricket-section">
+        <h2 class="cricket-heading"><i class="fas fa-link"></i> <span data-i18n="cricket.quick_links">Quick Links</span></h2>
+        <div class="quick-links-grid">
+            <a href="https://www.cricbuzz.com/cricket-schedule/upcoming-series/international" target="_blank" class="quick-link-card">
+                <i class="fas fa-globe"></i>
+                <span data-i18n="cricket.intl">International</span>
+            </a>
+            <a href="https://www.cricbuzz.com/cricket-schedule/upcoming-series/domestic" target="_blank" class="quick-link-card">
+                <i class="fas fa-flag"></i>
+                <span data-i18n="cricket.domestic">Domestic</span>
+            </a>
+            <a href="https://www.cricbuzz.com/cricket-schedule/upcoming-series/league" target="_blank" class="quick-link-card">
+                <i class="fas fa-trophy"></i>
+                <span data-i18n="cricket.leagues">Leagues (IPL)</span>
+            </a>
+            <a href="https://www.cricbuzz.com/cricket-schedule/upcoming-series/women" target="_blank" class="quick-link-card">
+                <i class="fas fa-female"></i>
+                <span data-i18n="cricket.women">Women's Cricket</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+{% block extra_css %}
+<style>
+    .cricket-page {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 40px 2rem 80px;
+    }
+
+    .cricket-section {
+        margin-bottom: 50px;
+    }
+
+    .cricket-heading {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .live-dot {
+        color: #e74c3c;
+        font-size: 0.6rem;
+        animation: pulse-dot 1.5s infinite;
+    }
+
+    @keyframes pulse-dot {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+    }
+
+    /* Match Cards */
+    .matches-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 20px;
+    }
+
+    .match-card {
+        background: var(--bg-card);
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .match-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .match-status {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+    }
+
+    .match-status.live {
+        background: #fde8e8;
+        color: #e74c3c;
+    }
+
+    .match-status.completed {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+
+    .match-status.upcoming {
+        background: #e3f2fd;
+        color: #1565c0;
+    }
+
+    .match-series {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-bottom: 15px;
+    }
+
+    .match-teams {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .team-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .team-name {
+        font-weight: 600;
+        font-size: 1rem;
+        color: var(--text-primary);
+    }
+
+    .team-score {
+        font-weight: 700;
+        font-size: 1rem;
+        color: var(--text-primary);
+    }
+
+    .match-result {
+        font-size: 0.85rem;
+        color: #2e7d32;
+        font-weight: 500;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid var(--border-color);
+    }
+
+    /* Cricbuzz embed */
+    .cricbuzz-embed {
+        background: var(--bg-card);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+    }
+
+    /* Quick Links */
+    .quick-links-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 16px;
+    }
+
+    .quick-link-card {
+        background: var(--bg-card);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .quick-link-card i {
+        font-size: 1.3rem;
+        color: #2e7d32;
+        min-width: 24px;
+    }
+
+    .quick-link-card span {
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+    .quick-link-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+        border-color: #2e7d32;
+    }
+
+    .loading-spinner {
+        text-align: center;
+        padding: 40px;
+        color: var(--text-muted);
+        grid-column: 1 / -1;
+    }
+
+    .loading-spinner i {
+        font-size: 2rem;
+        margin-bottom: 10px;
+        color: #2e7d32;
+    }
+
+    @media (max-width: 768px) {
+        .matches-grid {
+            grid-template-columns: 1fr;
+        }
+        .quick-links-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Fetch live cricket scores from Cricbuzz RSS / public API
+async function fetchLiveScores() {
+    const container = document.getElementById('matchesContainer');
+    
+    try {
+        const response = await fetch('/api/cricket/matches/');
+        const data = await response.json();
+        
+        let html = '';
+        const matches = data.matches || [];
+        
+        if (matches.length > 0) {
+            matches.forEach(match => {
+                const statusLabel = match.status === 'live' ? '● LIVE' : match.status === 'completed' ? '✓ COMPLETED' : '◷ UPCOMING';
+                let score1 = match.team1.score;
+                if (match.team1.overs) score1 += ` (${match.team1.overs})`;
+                let score2 = match.team2.score;
+                if (match.team2.overs) score2 += ` (${match.team2.overs})`;
+                
+                let commentaryHtml = '';
+                if (match.status === 'live' && match.commentary) {
+                    const firstLine = match.commentary.split('\n')[0];
+                    commentaryHtml = `<div style="font-size:0.75rem; color:var(--text-muted); background:var(--bg-secondary); padding:6px 10px; border-radius:6px; margin-top:10px; border: 1px solid var(--border-color); font-style:italic;">💬 ${firstLine}</div>`;
+                }
+                
+                html += `
+                    <div class="match-card" style="cursor: default;">
+                        <span class="match-status ${match.status}">
+                            ${statusLabel}
+                        </span>
+                        <div class="match-series">${match.series}</div>
+                        <div class="match-teams">
+                            <div class="team-row">
+                                <span class="team-name">${match.team1.name}</span>
+                                <span class="team-score">${score1 || '-'}</span>
+                            </div>
+                            <div class="team-row">
+                                <span class="team-name">${match.team2.name}</span>
+                                <span class="team-score">${score2 || '-'}</span>
+                            </div>
+                        </div>
+                        <div class="match-result">${match.result || 'Match in progress'}</div>
+                        ${commentaryHtml}
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+            return;
+        }
+    } catch (err) {
+        console.error("Error fetching live matches: ", err);
+    }
+
+    // Fallback static matches data if no active matches are set up in the database yet
+    const fallbackMatches = [
+        {
+            series: "Indian Premier League 2026",
+            status: "live",
+            team1: { name: "Mumbai Indians", score: "185/4 (18.2)" },
+            team2: { name: "Chennai Super Kings", score: "142/3 (15.0)" },
+            result: "CSK need 44 runs from 30 balls",
+            url: "https://www.cricbuzz.com/live-cricket-scores"
+        },
+        {
+            series: "ICC Champions Trophy 2026",
+            status: "completed",
+            team1: { name: "India", score: "326/5 (50)" },
+            team2: { name: "Australia", score: "298/10 (47.3)" },
+            result: "India won by 28 runs",
+            url: "https://www.cricbuzz.com/live-cricket-scores"
+        },
+        {
+            series: "Karwar District League",
+            status: "upcoming",
+            team1: { name: "Karwar Tigers", score: "" },
+            team2: { name: "Ankola Warriors", score: "" },
+            result: "Match starts at 9:30 AM",
+            url: "#"
+        }
+    ];
+
+    let html = '';
+    fallbackMatches.forEach(match => {
+        html += `
+            <a href="${match.url}" target="_blank" class="match-card">
+                <span class="match-status ${match.status}">
+                    ${match.status === 'live' ? '● LIVE' : match.status === 'completed' ? '✓ COMPLETED' : '◷ UPCOMING'}
+                </span>
+                <div class="match-series">${match.series}</div>
+                <div class="match-teams">
+                    <div class="team-row">
+                        <span class="team-name">${match.team1.name}</span>
+                        <span class="team-score">${match.team1.score || '-'}</span>
+                    </div>
+                    <div class="team-row">
+                        <span class="team-name">${match.team2.name}</span>
+                        <span class="team-score">${match.team2.score || '-'}</span>
+                    </div>
+                </div>
+                <div class="match-result">${match.result}</div>
+            </a>
+        `;
+    });
+
+    container.innerHTML = html;
+}
+
+// Load scores on page load
+fetchLiveScores();
+// Auto refresh every 10 seconds for real time experience
+setInterval(fetchLiveScores, 10000);
+</script>
+{% endblock %}
+
+{% endblock %}

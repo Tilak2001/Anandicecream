@@ -1,0 +1,425 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}⚡ Update Score - {{ match.team1_name }} vs {{ match.team2_name }}{% endblock %}
+
+{% block extra_style %}
+/* ===== SCORECARD STYLES — WP Plugin Style ===== */
+.sc-header {
+    background: linear-gradient(135deg, #131726 0%, #1a1d2e 100%);
+    border: 1px solid #252a3e;
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 24px;
+}
+.sc-header h1 { font-size: 1.4rem; color: #f59e0b; }
+.sc-header .match-info { color: var(--text2); font-size: 0.9rem; margin-top: 4px; }
+
+/* Innings Tabs */
+.innings-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+.inn-tab {
+    padding: 10px 28px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+}
+.inn-tab.active { background: #ef4444; color: #fff; }
+.inn-tab.inactive { background: #2d3148; color: #8b8fa8; }
+.inn-tab.inactive:hover { background: #3b4168; color: #e4e6f0; }
+
+/* Score Panel */
+.score-panel {
+    background: linear-gradient(135deg, #131726 0%, #1a1d2e 100%);
+    border: 1px solid #252a3e;
+    border-radius: var(--radius);
+    margin-bottom: 24px;
+    overflow: hidden;
+}
+.score-panel-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid #252a3e;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+.score-panel-body { padding: 20px; }
+
+.score-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
+    margin-bottom: 18px;
+}
+.score-grid .sg-item label {
+    display: block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text2);
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+.sg-input {
+    width: 100%;
+    padding: 12px;
+    background: #0d1117;
+    border: 2px solid #1e2538;
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.sg-input:focus { border-color: var(--accent); }
+.sg-input.cyan { border-color: #06b6d4; color: #06b6d4; font-weight: 800; font-size: 1.3rem; }
+.sg-input.cyan:focus { border-color: #22d3ee; }
+
+.score-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.full-input {
+    width: 100%;
+    padding: 10px 14px;
+    background: #0d1117;
+    border: 1px solid #1e2538;
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    margin-bottom: 14px;
+}
+.full-input:focus { border-color: var(--accent); }
+.full-input-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #ef4444;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+/* Batting & Bowling Tables */
+.sc-table-panel {
+    background: linear-gradient(135deg, #131726 0%, #1a1d2e 100%);
+    border: 1px solid #252a3e;
+    border-radius: var(--radius);
+    margin-bottom: 24px;
+    overflow: hidden;
+}
+.sc-table-header {
+    padding: 14px 20px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.sc-table-header .bat-icon { color: #ef4444; }
+.sc-table-header .bowl-icon { color: #06b6d4; }
+.sc-table-hint {
+    padding: 0 20px 10px;
+    font-size: 0.75rem;
+    color: var(--text2);
+}
+.sc-table-hint span { color: #22c55e; }
+
+.sc-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.sc-table th {
+    padding: 10px 12px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text2);
+    border-bottom: 1px solid #252a3e;
+    text-align: center;
+    font-weight: 600;
+}
+.sc-table th:nth-child(1) { width: 36px; }
+.sc-table th:nth-child(2) { width: 56px; }
+.sc-table th:nth-child(3) { text-align: left; }
+
+.sc-table td {
+    padding: 6px 8px;
+    border-bottom: 1px solid #1a1e30;
+    text-align: center;
+    vertical-align: middle;
+}
+.sc-table tr:hover td { background: rgba(99,102,241,0.03); }
+
+.sc-table .pos-num { color: #818cf8; font-weight: 600; font-size: 0.85rem; }
+
+.sc-table input[type="text"],
+.sc-table input[type="number"] {
+    width: 100%;
+    padding: 8px 10px;
+    background: #0d1117;
+    border: 1px solid #1e2538;
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    outline: none;
+    text-align: center;
+}
+.sc-table input[type="text"] { text-align: left; }
+.sc-table input[type="text"]:focus,
+.sc-table input[type="number"]:focus { border-color: #6366f1; }
+
+.sc-table input[type="checkbox"] {
+    width: 18px; height: 18px; cursor: pointer;
+    accent-color: #22c55e;
+}
+
+.sc-table .name-input { min-width: 180px; }
+
+/* Active batter row highlight */
+.sc-table tr.at-crease td { background: rgba(34, 197, 94, 0.06); }
+
+/* Bottom bar */
+.save-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 20px 0;
+    position: sticky;
+    bottom: 0;
+    background: var(--bg);
+    z-index: 10;
+}
+.btn-save-sc {
+    padding: 12px 30px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+.btn-save-sc:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(239,68,68,0.3); }
+.save-tip { color: var(--text2); font-size: 0.8rem; margin-left: auto; }
+
+@media (max-width: 768px) {
+    .score-grid { grid-template-columns: repeat(3, 1fr); }
+    .score-grid-3 { grid-template-columns: 1fr; }
+    .sc-table { font-size: 0.8rem; }
+}
+{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="sc-header">
+    <h1>⚡ Update Score</h1>
+    <div class="match-info">{{ match.team1_name }} vs {{ match.team2_name }} · {{ match.venue }}</div>
+    <a href="{% url 'cricket_list' %}" class="btn btn-outline btn-sm" style="margin-top:12px;"><i class="fas fa-arrow-left"></i> Dashboard</a>
+</div>
+
+<!-- Innings Tabs -->
+<div class="innings-tabs">
+    <a href="?innings=1" class="inn-tab {% if innings_num == 1 %}active{% else %}inactive{% endif %}">1st Innings</a>
+    <a href="?innings=2" class="inn-tab {% if innings_num == 2 %}active{% else %}inactive{% endif %}">2nd Innings</a>
+</div>
+
+<form method="POST" id="scorecardForm">
+    {% csrf_token %}
+
+    <!-- Score & Status Panel -->
+    <div class="score-panel">
+        <div class="score-panel-header">📊 Score & Status</div>
+        <div class="score-panel-body">
+            <div class="score-grid">
+                <div class="sg-item">
+                    <label>Match Status</label>
+                    <select name="match_status" class="sg-input">
+                        <option value="upcoming" {% if match.status == 'upcoming' %}selected{% endif %}>Upcoming</option>
+                        <option value="live" {% if match.status == 'live' %}selected{% endif %}>🔴 Live</option>
+                        <option value="completed" {% if match.status == 'completed' %}selected{% endif %}>Completed</option>
+                        <option value="cancelled" {% if match.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                    </select>
+                </div>
+                <div class="sg-item">
+                    <label>Batting Team</label>
+                    <select name="batting_team" class="sg-input">
+                        <option value="{{ match.team1_name }}" {% if innings.batting_team == match.team1_name %}selected{% endif %}>{{ match.team1_name }}</option>
+                        <option value="{{ match.team2_name }}" {% if innings.batting_team == match.team2_name %}selected{% endif %}>{{ match.team2_name }}</option>
+                    </select>
+                </div>
+                <div class="sg-item">
+                    <label>Total Runs</label>
+                    <input type="number" name="total_runs" class="sg-input cyan" value="{{ innings.total_runs }}">
+                </div>
+                <div class="sg-item">
+                    <label>Wickets</label>
+                    <input type="number" name="wickets" class="sg-input cyan" value="{{ innings.wickets }}" min="0" max="10">
+                </div>
+                <div class="sg-item">
+                    <label>Overs</label>
+                    <input type="text" name="overs" class="sg-input cyan" value="{{ innings.overs }}" placeholder="18.2">
+                </div>
+                <div class="sg-item">
+                    <label>Extras</label>
+                    <input type="number" name="extras" class="sg-input" value="{{ innings.extras }}">
+                </div>
+            </div>
+
+            <div class="score-grid-3">
+                <div class="sg-item">
+                    <label>Extras Detail</label>
+                    <input type="text" name="extras_detail" class="sg-input" value="{{ innings.extras_detail }}" placeholder="b 0, lb 2, w 5, nb 1" style="text-align:left;">
+                </div>
+                <div class="sg-item">
+                    <label>Current Run Rate</label>
+                    <input type="text" name="current_run_rate" class="sg-input" value="{{ innings.current_run_rate }}">
+                </div>
+                <div class="sg-item">
+                    <label>Required Rate</label>
+                    <input type="text" name="required_rate" class="sg-input" value="{{ innings.required_rate }}">
+                </div>
+            </div>
+
+            <div>
+                <div class="full-input-label">STATUS TEXT <small style="color:#8b8fa8;font-weight:400;text-transform:none;">(e.g. "CSK need 45 runs in 30 balls")</small></div>
+                <input type="text" name="status_text" class="full-input" value="{{ innings.status_text }}" placeholder="e.g. Delhi Capitals need 148 runs in 78 balls">
+            </div>
+            <div>
+                <div class="full-input-label">RESULT <small style="color:#8b8fa8;font-weight:400;text-transform:none;">(shown when match is completed)</small></div>
+                <input type="text" name="result" class="full-input" value="{{ innings.result }}" placeholder="e.g. CSK won by 5 wickets">
+            </div>
+            <div>
+                <div class="full-input-label">FALL OF WICKETS <small style="color:#8b8fa8;font-weight:400;text-transform:none;">(e.g. "1-25 (Rohit, 3.2), 2-48 (SKY, 6.1)")</small></div>
+                <input type="text" name="fall_of_wickets" class="full-input" value="{{ innings.fall_of_wickets }}" placeholder="1-25 (Rohit, 3.2), 2-48 (SKY, 6.1)">
+            </div>
+        </div>
+    </div>
+
+    <!-- Batting Scorecard -->
+    <div class="sc-table-panel">
+        <div class="sc-table-header"><span class="bat-icon">🏏</span> Batting</div>
+        <div class="sc-table-hint">Check <span>☑</span> for batters currently at the crease. Leave name empty to skip a row.</div>
+        <div class="table-wrap">
+            <table class="sc-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>At Crease</th>
+                        <th>Batter Name</th>
+                        <th>Runs</th>
+                        <th>Balls</th>
+                        <th>4s</th>
+                        <th>6s</th>
+                        <th>How Out</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for b in batting_data %}
+                    <tr class="{% if b.at_crease %}at-crease{% endif %}">
+                        <td class="pos-num">{{ b.pos }}</td>
+                        <td><input type="checkbox" name="bat_crease_{{ b.pos }}" {% if b.at_crease %}checked{% endif %}></td>
+                        <td><input type="text" name="bat_name_{{ b.pos }}" class="name-input" value="{{ b.name }}"></td>
+                        <td><input type="number" name="bat_runs_{{ b.pos }}" value="{{ b.runs }}" min="0"></td>
+                        <td><input type="number" name="bat_balls_{{ b.pos }}" value="{{ b.balls }}" min="0"></td>
+                        <td><input type="number" name="bat_fours_{{ b.pos }}" value="{{ b.fours }}" min="0"></td>
+                        <td><input type="number" name="bat_sixes_{{ b.pos }}" value="{{ b.sixes }}" min="0"></td>
+                        <td>
+                            <select name="bat_howout_{{ b.pos }}" class="sg-input" style="padding:8px; font-size:0.8rem; text-align:left;">
+                                <option value="batting" {% if b.how_out == 'batting' %}selected{% endif %}>batting</option>
+                                <option value="caught" {% if b.how_out == 'caught' %}selected{% endif %}>caught</option>
+                                <option value="bowled" {% if b.how_out == 'bowled' %}selected{% endif %}>bowled</option>
+                                <option value="lbw" {% if b.how_out == 'lbw' %}selected{% endif %}>lbw</option>
+                                <option value="run out" {% if b.how_out == 'run out' %}selected{% endif %}>run out</option>
+                                <option value="stumped" {% if b.how_out == 'stumped' %}selected{% endif %}>stumped</option>
+                                <option value="hit wicket" {% if b.how_out == 'hit wicket' %}selected{% endif %}>hit wicket</option>
+                                <option value="retired" {% if b.how_out == 'retired' %}selected{% endif %}>retired</option>
+                                <option value="not out" {% if b.how_out == 'not out' %}selected{% endif %}>not out</option>
+                                <option value="did not bat" {% if b.how_out == 'did not bat' %}selected{% endif %}>did not bat</option>
+                            </select>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Bowling Scorecard -->
+    <div class="sc-table-panel">
+        <div class="sc-table-header"><span class="bowl-icon">🎳</span> Bowling</div>
+        <div class="sc-table-hint">Check <span>☑</span> for the current bowler.</div>
+        <div class="table-wrap">
+            <table class="sc-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Active</th>
+                        <th>Bowler Name</th>
+                        <th>Overs</th>
+                        <th>M</th>
+                        <th>Runs</th>
+                        <th>Wkts</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bw in bowling_data %}
+                    <tr>
+                        <td class="pos-num">{{ bw.pos }}</td>
+                        <td><input type="checkbox" name="bowl_active_{{ bw.pos }}" {% if bw.is_active %}checked{% endif %}></td>
+                        <td><input type="text" name="bowl_name_{{ bw.pos }}" class="name-input" value="{{ bw.name }}"></td>
+                        <td><input type="number" name="bowl_overs_{{ bw.pos }}" value="{{ bw.overs }}" min="0" step="0.1"></td>
+                        <td><input type="number" name="bowl_maidens_{{ bw.pos }}" value="{{ bw.maidens }}" min="0"></td>
+                        <td><input type="number" name="bowl_runs_{{ bw.pos }}" value="{{ bw.runs }}" min="0"></td>
+                        <td><input type="number" name="bowl_wickets_{{ bw.pos }}" value="{{ bw.wickets }}" min="0"></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Save Bar -->
+    <div class="save-bar">
+        <button type="submit" class="btn-save-sc"><i class="fas fa-save"></i> Save Scorecard</button>
+        <a href="{% url 'cricket_list' %}" class="btn btn-outline">← Back to Dashboard</a>
+        <span class="save-tip">💡 Tip: Press <strong>Ctrl+S</strong> to quick save</span>
+    </div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Ctrl+S quick save
+document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        document.getElementById('scorecardForm').submit();
+    }
+});
+
+// Highlight at-crease rows dynamically
+document.querySelectorAll('input[name^="bat_crease_"]').forEach(cb => {
+    cb.addEventListener('change', function() {
+        this.closest('tr').classList.toggle('at-crease', this.checked);
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,649 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cup Ice Cream - Anand Ice Cream</title>
+    <link rel="stylesheet" href="{% static 'icecream/css/styles.css' %}">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .cup-page {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1.5rem 3rem;
+        }
+
+        .breadcrumb {
+            font-size: 0.88rem;
+            color: #888;
+            margin-bottom: 1.5rem;
+        }
+
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb span {
+            margin: 0 0.4rem;
+        }
+
+        .product-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        /* Image panel */
+        .image-panel {
+            position: sticky;
+            top: 90px;
+        }
+
+        .main-image-wrap {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            aspect-ratio: 1/1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .main-image-wrap img {
+            max-width: 100%;
+            max-height: 320px;
+            object-fit: contain;
+            transition: transform 0.4s ease;
+        }
+
+        .main-image-wrap img:hover {
+            transform: scale(1.05);
+        }
+
+        .thumb-strip {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .thumb {
+            width: 70px;
+            height: 70px;
+            border-radius: 12px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px;
+            transition: all 0.2s ease;
+            overflow: hidden;
+        }
+
+        .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .thumb.active {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.25);
+        }
+
+        .thumb:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        /* Decorative frame for main image */
+        .main-image-wrap::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, #f6d365, #fda085, #667eea, #f093fb);
+            z-index: -1;
+            animation: rotateBorder 4s linear infinite;
+        }
+
+        @keyframes rotateBorder {
+            0% {
+                filter: hue-rotate(0deg);
+            }
+
+            100% {
+                filter: hue-rotate(360deg);
+            }
+        }
+
+        /* Details panel */
+        .details-panel {
+            padding-top: 0.5rem;
+        }
+
+        .product-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        .product-name {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin: 0 0 0.4rem;
+        }
+
+        .product-tagline {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .price-block {
+            display: flex;
+            align-items: baseline;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .price-main {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #e84393;
+        }
+
+        .price-per {
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        .section-label {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 0.75rem;
+        }
+
+        .selected-flavor-name {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .flavor-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .flavor-card {
+            border: none;
+            border-radius: 14px;
+            padding: 0.75rem 0.5rem;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.25s ease;
+            background: white;
+            position: relative;
+            box-shadow: 0 0 0 2px #e8e8e8, 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .flavor-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 0 0 2.5px #667eea, 0 8px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .flavor-card.selected {
+            background: linear-gradient(135deg, #fff0f6, #fff);
+        }
+
+        .flavor-card[data-flavor='Butterscotch'].selected {
+            box-shadow: 0 0 0 3px #f6a623, 0 6px 18px rgba(246, 166, 35, 0.25);
+        }
+
+        .flavor-card[data-flavor='Chocolate'].selected {
+            box-shadow: 0 0 0 3px #7b4f2e, 0 6px 18px rgba(123, 79, 46, 0.25);
+        }
+
+        .flavor-card[data-flavor='Vanilla'].selected {
+            box-shadow: 0 0 0 3px #f5c842, 0 6px 18px rgba(245, 200, 66, 0.25);
+        }
+
+        .flavor-card[data-flavor='Strawberry'].selected {
+            box-shadow: 0 0 0 3px #e84040, 0 6px 18px rgba(232, 64, 64, 0.25);
+        }
+
+        .flavor-card[data-flavor='Kesar Pista'].selected {
+            box-shadow: 0 0 0 3px #4caf50, 0 6px 18px rgba(76, 175, 80, 0.25);
+        }
+
+        .flavor-card[data-flavor='Mango'].selected {
+            box-shadow: 0 0 0 3px #ff9800, 0 6px 18px rgba(255, 152, 0, 0.25);
+        }
+
+        .flavor-card img {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            margin-bottom: 0.4rem;
+            background: white;
+        }
+
+        .flavor-card-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .flavor-card-price {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #e84393;
+            margin-top: 0.2rem;
+        }
+
+        .qty-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .qty-control {
+            display: flex;
+            align-items: center;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            overflow: hidden;
+        }
+
+        .qty-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            background: white;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #667eea;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .qty-btn:hover {
+            background: #f0f0ff;
+        }
+
+        .qty-input {
+            width: 52px;
+            height: 44px;
+            border: none;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #333;
+            outline: none;
+            background: white;
+        }
+
+        .qty-total {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .qty-total span {
+            color: #e84393;
+            font-size: 1.3rem;
+        }
+
+        .cta-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-cart {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 14px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-cart:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-cart:active {
+            transform: scale(0.97);
+        }
+
+        .info-chips {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .chip {
+            background: #f4f4ff;
+            border: 1px solid #dddaff;
+            border-radius: 20px;
+            padding: 0.4rem 0.9rem;
+            font-size: 0.82rem;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .divider {
+            height: 1px;
+            background: #f0f0f0;
+            margin: 1.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .product-layout {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .image-panel {
+                position: static;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="{% url 'icecream:home' %}" class="logo">
+                <span class="logo-icon">🍦</span>
+                <span>Anand Ice Cream</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="{% url 'icecream:home' %}">Home</a></li>
+                <li><a href="{% url 'icecream:products' %}" class="active">Products</a></li>
+                <li><a href="{% url 'icecream:home' %}#about">About Us</a></li>
+                <li><a href="{% url 'icecream:home' %}#contact">Contact</a></li>
+                <li><a href="{% url 'icecream:admin_login' %}">Admin</a></li>
+            </ul>
+            <a href="{% url 'icecream:cart' %}" class="cart-icon">
+                🛒
+                <span class="cart-count" id="cartCount">0</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Inject Django static URLs into JS safely -->
+    <script>
+        const CUP_DATA = {
+            'Butterscotch': { img: '{% static "icecream/asset/icimg/cup/Butterscotch.png" %}', price: 10 },
+            'Chocolate': { img: '{% static "icecream/asset/icimg/cup/chocolate.png" %}', price: 10 },
+            'Vanilla': { img: '{% static "icecream/asset/icimg/cup/vanilla.png" %}', price: 10 },
+            'Strawberry': { img: '{% static "icecream/asset/icimg/cup/strawberry.png" %}', price: 10 },
+            'Kesar Pista': { img: '{% static "icecream/asset/icimg/cup/kesarpista.png" %}', price: 10 },
+            'Mango': { img: '{% static "icecream/asset/icimg/cup/mango.png" %}', price: 10 }
+        };
+    </script>
+
+    <div class="cup-page">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <a href="/ice-cream/">Home</a>
+            <span>›</span>
+            <a href="/ice-cream/products/">Products</a>
+            <span>›</span>
+            Cup Ice Cream
+        </div>
+
+        <div class="product-layout">
+
+            <!-- LEFT: Image Panel -->
+            <div class="image-panel">
+                <div class="main-image-wrap">
+                    <img id="mainCupImage" src="{% static 'icecream/asset/icimg/cup/Butterscotch.png' %}" alt="Cup Ice Cream">
+                </div>
+                <div class="thumb-strip" id="thumbStrip">
+                    <div class="thumb active" data-flavor="Butterscotch" onclick="pickCupFlavor('Butterscotch')">
+                        <img src="{% static 'icecream/asset/icimg/cup/Butterscotch.png' %}" alt="Butterscotch">
+                    </div>
+                    <div class="thumb" data-flavor="Chocolate" onclick="pickCupFlavor('Chocolate')">
+                        <img src="{% static 'icecream/asset/icimg/cup/chocolate.png' %}" alt="Chocolate">
+                    </div>
+                    <div class="thumb" data-flavor="Vanilla" onclick="pickCupFlavor('Vanilla')">
+                        <img src="{% static 'icecream/asset/icimg/cup/vanilla.png' %}" alt="Vanilla">
+                    </div>
+                    <div class="thumb" data-flavor="Strawberry" onclick="pickCupFlavor('Strawberry')">
+                        <img src="{% static 'icecream/asset/icimg/cup/strawberry.png' %}" alt="Strawberry">
+                    </div>
+                    <div class="thumb" data-flavor="Kesar Pista" onclick="pickCupFlavor('Kesar Pista')">
+                        <img src="{% static 'icecream/asset/icimg/cup/kesarpista.png' %}" alt="Kesar Pista">
+                    </div>
+                    <div class="thumb" data-flavor="Mango" onclick="pickCupFlavor('Mango')">
+                        <img src="{% static 'icecream/asset/icimg/cup/mango.png' %}" alt="Mango">
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Details Panel -->
+            <div class="details-panel">
+                <span class="product-badge">🥤 Freshly Served</span>
+                <h1 class="product-name">Cup Ice Cream</h1>
+                <p class="product-tagline">Delicious ice cream served in a convenient cup — pick your favourite flavour
+                </p>
+
+                <div class="divider"></div>
+
+                <div class="price-block">
+                    <span class="price-main" id="cupPagePrice">₹10</span>
+                    <span class="price-per">per cup</span>
+                </div>
+
+                <!-- Flavor Selection -->
+                <div class="section-label">
+                    Choose Flavor — <span class="selected-flavor-name" id="selectedCupFlavorLabel">Butterscotch</span>
+                </div>
+
+                <div class="flavor-list">
+                    <div class="flavor-card selected" data-flavor="Butterscotch"
+                        onclick="pickCupFlavor('Butterscotch')">
+                        <img src="{% static 'icecream/asset/icimg/cup/Butterscotch.png' %}" alt="Butterscotch">
+                        <div class="flavor-card-name">Butterscotch</div>
+                        <div class="flavor-card-price">₹10</div>
+                    </div>
+                    <div class="flavor-card" data-flavor="Chocolate" onclick="pickCupFlavor('Chocolate')">
+                        <img src="{% static 'icecream/asset/icimg/cup/chocolate.png' %}" alt="Chocolate">
+                        <div class="flavor-card-name">Chocolate</div>
+                        <div class="flavor-card-price">₹10</div>
+                    </div>
+                    <div class="flavor-card" data-flavor="Vanilla" onclick="pickCupFlavor('Vanilla')">
+                        <img src="{% static 'icecream/asset/icimg/cup/vanilla.png' %}" alt="Vanilla">
+                        <div class="flavor-card-name">Vanilla</div>
+                        <div class="flavor-card-price">₹10</div>
+                    </div>
+                    <div class="flavor-card" data-flavor="Strawberry" onclick="pickCupFlavor('Strawberry')">
+                        <img src="{% static 'icecream/asset/icimg/cup/strawberry.png' %}" alt="Strawberry">
+                        <div class="flavor-card-name">Strawberry</div>
+                        <div class="flavor-card-price">₹10</div>
+                    </div>
+                    <div class="flavor-card" data-flavor="Kesar Pista" onclick="pickCupFlavor('Kesar Pista')">
+                        <img src="{% static 'icecream/asset/icimg/cup/kesarpista.png' %}" alt="Kesar Pista">
+                        <div class="flavor-card-name">Kesar Pista</div>
+                        <div class="flavor-card-price">₹10</div>
+                    </div>
+                    <div class="flavor-card" data-flavor="Mango" onclick="pickCupFlavor('Mango')">
+                        <img src="{% static 'icecream/asset/icimg/cup/mango.png' %}" alt="Mango">
+                        <div class="flavor-card-name">Mango</div>
+                        <div class="flavor-card-price">₹10</div>
+                    </div>
+                </div>
+
+                <!-- Quantity -->
+                <div class="section-label">Quantity</div>
+                <div class="qty-row">
+                    <div class="qty-control">
+                        <button class="qty-btn" onclick="cupDecQty()">−</button>
+                        <input class="qty-input" type="number" id="cupPageQty" value="1" min="1"
+                            oninput="cupQtyInput(this)">
+                        <button class="qty-btn" onclick="cupIncQty()">+</button>
+                    </div>
+                    <div class="qty-total">Total: <span id="cupTotalDisplay">₹10</span></div>
+                </div>
+
+                <!-- CTA -->
+                <div class="cta-row">
+                    <button class="btn-cart" id="cupAddBtn" onclick="addCupToCartPage()">
+                        🛒 Add to Cart
+                    </button>
+                </div>
+
+                <!-- Info chips -->
+                <div class="info-chips">
+                    <span class="chip">🚚 Home Delivery</span>
+                    <span class="chip">❄️ Fresh &amp; Chilled</span>
+                    <span class="chip">🍦 Premium Quality</span>
+                    <span class="chip">✅ Order Verified</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <p class="footer-brand">🍦 Anand Ice Cream</p>
+            <p class="footer-copy">© 2026 Anand Ice Cream. All rights reserved.</p>
+            <p class="footer-tagline">Made with ❤️ for ice cream lovers</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'icecream/js/cart.js' %}"></script>
+    <script>
+        // ---- State ----
+        let cupPageFlavor = 'Butterscotch';
+        let cupPageUnitPrice = 10;
+        let cupPageQtyVal = 1;
+
+        // ---- Pick Flavor ----
+        function pickCupFlavor(flavor) {
+            const data = CUP_DATA[flavor];
+            if (!data) return;
+
+            cupPageFlavor = flavor;
+            cupPageUnitPrice = data.price;
+
+            // Update main image
+            document.getElementById('mainCupImage').src = data.img;
+
+            // Update label & price
+            document.getElementById('selectedCupFlavorLabel').textContent = flavor;
+
+            // Highlight flavor card
+            document.querySelectorAll('.flavor-card').forEach(c => c.classList.remove('selected'));
+            document.querySelectorAll('.flavor-card[data-flavor="' + flavor + '"]')
+                .forEach(c => c.classList.add('selected'));
+
+            // Highlight thumb
+            document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.thumb[data-flavor="' + flavor + '"]')
+                .forEach(t => t.classList.add('active'));
+
+            updateCupTotalDisplay();
+        }
+
+        // ---- Quantity ----
+        function cupIncQty() {
+            const inp = document.getElementById('cupPageQty');
+            cupPageQtyVal = (parseInt(inp.value) || 1) + 1;
+            inp.value = cupPageQtyVal;
+            updateCupTotalDisplay();
+        }
+
+        function cupDecQty() {
+            const inp = document.getElementById('cupPageQty');
+            cupPageQtyVal = Math.max(1, (parseInt(inp.value) || 1) - 1);
+            inp.value = cupPageQtyVal;
+            updateCupTotalDisplay();
+        }
+
+        function cupQtyInput(inp) {
+            const v = parseInt(inp.value);
+            if (!isNaN(v) && v >= 1) { cupPageQtyVal = v; updateCupTotalDisplay(); }
+        }
+
+        function updateCupTotalDisplay() {
+            const total = cupPageUnitPrice * cupPageQtyVal;
+            document.getElementById('cupPagePrice').textContent = '₹' + cupPageUnitPrice;
+            document.getElementById('cupTotalDisplay').textContent = '₹' + total;
+        }
+
+        // ---- Add to Cart ----
+        function addCupToCartPage() {
+            const total = cupPageUnitPrice * cupPageQtyVal;
+            let cart = JSON.parse(localStorage.getItem('anandIceCreamCart') || '[]');
+            cart.push({
+                product: 'Cup',
+                flavor: cupPageFlavor,
+                quantity: cupPageQtyVal,
+                unitPrice: cupPageUnitPrice,
+                price: total
+            });
+            localStorage.setItem('anandIceCreamCart', JSON.stringify(cart));
+
+            const cartCount = document.getElementById('cartCount');
+            if (cartCount) cartCount.textContent = cart.length;
+
+            const btn = document.getElementById('cupAddBtn');
+            btn.textContent = '✅ Added to Cart!';
+            btn.style.background = 'linear-gradient(135deg, #00b894, #00cec9)';
+            setTimeout(() => {
+                btn.textContent = '🛒 Add to Cart';
+                btn.style.background = '';
+            }, 2000);
+        }
+
+        // ---- Init cart count ----
+        document.addEventListener('DOMContentLoaded', () => {
+            const cart = JSON.parse(localStorage.getItem('anandIceCreamCart') || '[]');
+            const el = document.getElementById('cartCount');
+            if (el) el.textContent = cart.length;
+        });
+    </script>
+</body>
+
+</html>

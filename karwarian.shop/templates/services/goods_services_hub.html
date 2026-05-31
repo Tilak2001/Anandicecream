@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Goods & Services - Karwarian.shop{% endblock %}
+
+{% block content %}
+<section class="page-header bg-primary text-white py-5">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold" data-i18n="services.title">Goods & Services</h1>
+        <p class="lead mb-0" data-i18n="services.subtitle">Buy, sell, and trade in the Karwar community</p>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-5 col-sm-10">
+                <a href="{% url 'services:second_hand_list' %}" class="text-decoration-none">
+                    <div class="card h-100 shadow-sm border-0 overflow-hidden hub-market-card">
+                        <div class="card-body p-4 text-center" style="background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%); color: #fff; min-height: 220px; display: flex; flex-direction: column; justify-content: center;">
+                            <div style="font-size: 3rem; margin-bottom: 0.5rem;">♻️</div>
+                            <h3 class="fw-bold mb-2" data-i18n="shm.hub.title">Second Hand Marketplace</h3>
+                            <p class="mb-2 opacity-90" data-i18n="shm.hub.desc">Buy & sell used items in Karwar — furniture, bikes, electronics & more</p>
+                            <span class="badge bg-white text-dark">{{ second_hand_count }} <span data-i18n="shm.hub.listings">active listings</span></span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-5 col-sm-10">
+                <a href="{% url 'services:list' %}" class="text-decoration-none">
+                    <div class="card h-100 shadow-sm border-0 overflow-hidden hub-market-card">
+                        <div class="card-body p-4 text-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; min-height: 220px; display: flex; flex-direction: column; justify-content: center;">
+                            <div style="font-size: 3rem; margin-bottom: 0.5rem;">🛒</div>
+                            <h3 class="fw-bold mb-2" data-i18n="shm.hub.all_goods">All Goods & Services</h3>
+                            <p class="mb-2 opacity-90" data-i18n="shm.hub.all_goods_desc">Function services, rentals, goods & approved marketplace listings</p>
+                            <span class="badge bg-white text-dark">{{ other_count }}+ <span data-i18n="shm.hub.items">items</span></span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'services:second_hand_add' %}" class="btn btn-warning btn-lg fw-bold text-dark me-2">
+                <i class="fas fa-plus-circle"></i> <span data-i18n="shm.sell_item">Sell Second-Hand Item</span>
+            </a>
+            <a href="{% url 'services:add' %}" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-bullhorn"></i> <span data-i18n="common.post_listing">Post a Listing</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<style>
+.hub-market-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.hub-market-card:hover { transform: translateY(-8px); box-shadow: 0 16px 40px rgba(0,0,0,0.15) !important; }
+.page-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+</style>
+{% endblock %}

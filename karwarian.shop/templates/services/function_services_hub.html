@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Function Services - Karwarian.shop{% endblock %}
+
+{% block extra_css %}
+<style>
+.fs-page-content {
+    padding-top: 90px;
+}
+.fs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+.fs-card {
+    background: var(--bg-card);
+    border-radius: var(--card-radius);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    display: block;
+    min-height: 220px;
+}
+.fs-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+}
+.fs-card-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 1.75rem;
+}
+.fs-card h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary); }
+.fs-card p { font-size: 0.9rem; color: var(--text-secondary); margin: 0; line-height: 1.5; }
+.fs-card-with-bg {
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+    border: none;
+}
+.fs-card-with-bg h3, .fs-card-with-bg p { color: #fff; }
+.fs-card-with-bg p { opacity: 0.92; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="py-5 fs-page-content">
+    <div class="container">
+        <div class="fs-grid">
+            {% for card in hub_cards %}
+            {% if card.external_url %}
+            <a href="{{ card.external_url }}" class="fs-card fs-card-with-bg" style="background-image: linear-gradient(rgba(15, 17, 23, 0.78), rgba(15, 17, 23, 0.92)), url('{% static card.image %}'); border: 1px solid {{ card.border }};">
+            {% else %}
+            <a href="{% url 'services:function_section' card.slug %}" class="fs-card fs-card-with-bg" style="background-image: linear-gradient(rgba(15, 17, 23, 0.78), rgba(15, 17, 23, 0.92)), url('{% static card.image %}'); border: 1px solid {{ card.border }};">
+            {% endif %}
+                <div class="fs-card-icon" style="background: {{ card.bg }};">
+                    <i class="fas {{ card.icon }}" style="color: {{ card.color }};"></i>
+                </div>
+                <h3 data-i18n="fs.hub.{{ card.slug }}.title">{{ card.title }}</h3>
+                <p data-i18n="fs.hub.{{ card.slug }}.desc">{{ card.description }}</p>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,297 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ profile.full_name }} - Matrimony - Karwarian.shop{% endblock %}
+
+{% block extra_css %}
+<style>
+.mat-detail-page {
+  padding-top: 90px;
+  padding-bottom: 3rem;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.mat-detail-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+  color: var(--teal);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.mat-detail-back:hover {
+  color: var(--accent);
+}
+
+.mat-detail-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.mat-detail-photo-wrap {
+  width: 100%;
+  line-height: 0;
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.mat-detail-photo {
+  width: 100%;
+  height: auto;
+  max-height: 480px;
+  object-fit: contain;
+  object-position: center top;
+  display: block;
+  background: #f1f5f9;
+}
+
+[data-theme="dark"] .mat-detail-photo {
+  background: var(--bg-secondary);
+}
+
+.mat-detail-photo-placeholder {
+  width: 100%;
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5rem;
+  background: linear-gradient(135deg, var(--teal-light) 0%, var(--bg-primary) 100%);
+}
+
+.mat-detail-title-bar {
+  padding: 1.15rem 1.75rem;
+  text-align: center;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.mat-detail-name {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.35rem;
+}
+
+.mat-detail-badge {
+  display: inline-block;
+  padding: 0.25rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: var(--teal-light);
+  color: var(--teal);
+  border: 1px solid rgba(45, 143, 123, 0.25);
+}
+
+.mat-detail-body {
+  padding: 1.5rem 1.75rem 1.75rem;
+}
+
+.mat-detail-section {
+  margin-bottom: 1.5rem;
+}
+
+.mat-detail-section:last-child {
+  margin-bottom: 0;
+}
+
+.mat-detail-section h2 {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--teal);
+  margin: 0 0 0.85rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--teal-light);
+}
+
+.mat-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem 1.5rem;
+}
+
+.mat-detail-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.mat-detail-row.full {
+  grid-column: 1 / -1;
+}
+
+.mat-detail-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.mat-detail-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.mat-detail-text {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  white-space: pre-line;
+}
+
+.mat-detail-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.mat-detail-contact a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.65rem 1.15rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: var(--transition);
+}
+
+.mat-detail-contact .btn-phone {
+  background: var(--accent);
+  color: #fff;
+}
+
+.mat-detail-contact .btn-phone:hover {
+  background: var(--accent-hover);
+  color: #fff;
+}
+
+.mat-detail-contact .btn-email {
+  background: var(--teal-light);
+  color: var(--teal);
+  border: 1px solid var(--teal);
+}
+
+.mat-detail-contact .btn-email:hover {
+  background: var(--teal);
+  color: #fff;
+}
+
+@media (max-width: 576px) {
+  .mat-detail-grid {
+    grid-template-columns: 1fr;
+  }
+  .mat-detail-photo {
+    max-height: 360px;
+  }
+  .mat-detail-photo-placeholder {
+    min-height: 220px;
+  }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mat-detail-page">
+  <a href="{% url 'matrimony_list' %}" class="mat-detail-back">
+    <i class="fas fa-arrow-left"></i> <span data-i18n="matrimony.back_list">Back to profiles</span>
+  </a>
+
+  <article class="mat-detail-card">
+    <div class="mat-detail-photo-wrap">
+      {% if profile.photo %}
+      <img src="{{ profile.photo.url }}" alt="{{ profile.full_name }}" class="mat-detail-photo">
+      {% else %}
+      <div class="mat-detail-photo-placeholder">{% if profile.gender == 'male' %}👨{% else %}👩{% endif %}</div>
+      {% endif %}
+    </div>
+    <header class="mat-detail-title-bar">
+      <h1 class="mat-detail-name">{{ profile.full_name }}</h1>
+      <span class="mat-detail-badge">{{ profile.caste }} · {% if profile.gender == 'male' %}<span data-i18n="matrimony.groom">Groom</span>{% else %}<span data-i18n="matrimony.bride">Bride</span>{% endif %}</span>
+    </header>
+
+    <div class="mat-detail-body">
+      <section class="mat-detail-section">
+        <h2 data-i18n="matrimony.personal_details">Personal Details</h2>
+        <div class="mat-detail-grid">
+          <div class="mat-detail-row">
+            <span class="mat-detail-label" data-i18n="label.age">Age</span>
+            <span class="mat-detail-value">{{ profile.age }} <span data-i18n="common.years">Years</span></span>
+          </div>
+          <div class="mat-detail-row">
+            <span class="mat-detail-label" data-i18n="label.height">Height</span>
+            <span class="mat-detail-value">{% if profile.height %}{{ profile.height }}{% else %}<span data-i18n="common.na">N/A</span>{% endif %}</span>
+          </div>
+          <div class="mat-detail-row">
+            <span class="mat-detail-label" data-i18n="label.fathers_name">Father's Name</span>
+            <span class="mat-detail-value">{{ profile.father_name }}</span>
+          </div>
+          <div class="mat-detail-row">
+            <span class="mat-detail-label" data-i18n="label.gender">Gender</span>
+            <span class="mat-detail-value">{% if profile.gender == 'male' %}<span data-i18n="gender.male">Male</span>{% else %}<span data-i18n="gender.female">Female</span>{% endif %}</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="mat-detail-section">
+        <h2 data-i18n="matrimony.education_work">Education & Work</h2>
+        <div class="mat-detail-grid">
+          <div class="mat-detail-row">
+            <span class="mat-detail-label" data-i18n="label.qualification">Qualification</span>
+            <span class="mat-detail-value">{{ profile.qualification }}</span>
+          </div>
+          <div class="mat-detail-row">
+            <span class="mat-detail-label" data-i18n="label.occupation">Occupation</span>
+            <span class="mat-detail-value">{% if profile.occupation %}{{ profile.occupation }}{% else %}<span data-i18n="common.na">N/A</span>{% endif %}</span>
+          </div>
+        </div>
+      </section>
+
+      {% if profile.address %}
+      <section class="mat-detail-section">
+        <h2 data-i18n="label.address">Address</h2>
+        <p class="mat-detail-text">{{ profile.address }}</p>
+      </section>
+      {% endif %}
+
+      {% if profile.additional_info %}
+      <section class="mat-detail-section">
+        <h2 data-i18n="label.additional_info">Additional Information</h2>
+        <p class="mat-detail-text">{{ profile.additional_info }}</p>
+      </section>
+      {% endif %}
+
+      <section class="mat-detail-section">
+        <h2 data-i18n="matrimony.contact_section">Contact</h2>
+        <div class="mat-detail-contact">
+          {% if profile.contact_phone %}
+          <a href="tel:{{ profile.contact_phone }}" class="btn-phone">
+            <i class="fas fa-phone"></i> {{ profile.contact_phone }}
+          </a>
+          {% endif %}
+          {% if profile.contact_email %}
+          <a href="mailto:{{ profile.contact_email }}" class="btn-email">
+            <i class="fas fa-envelope"></i> {{ profile.contact_email }}
+          </a>
+          {% endif %}
+          {% if not profile.contact_phone and not profile.contact_email %}
+          <p class="mat-detail-text" data-i18n="matrimony.no_contact">Contact information not available.</p>
+          {% endif %}
+        </div>
+      </section>
+    </div>
+  </article>
+</div>
+{% endblock %}

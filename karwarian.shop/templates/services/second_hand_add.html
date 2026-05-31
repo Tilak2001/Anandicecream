@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sell Item - Second Hand Marketplace{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'services/second-hand.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="page-header text-white py-5" style="background: linear-gradient(135deg, #0d9488, #0f766e); margin-top: 70px;">
+    <div class="container text-center">
+        <h1 class="display-6 fw-bold" data-i18n="shm.form.title">Sell your item</h1>
+        <p class="lead mb-0" data-i18n="shm.form.subtitle">Your listing will be reviewed before it goes live</p>
+    </div>
+</section>
+
+<div class="container py-5">
+    <div class="shm-form-wrap">
+        <div class="shm-form-card">
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} mb-3">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
+
+            <form method="post" enctype="multipart/form-data" class="shm-sell-form">
+                {% csrf_token %}
+
+                <div class="shm-field">
+                    <label for="title" data-i18n="shm.field.title">Item name *</label>
+                    <input type="text" name="title" id="title" required maxlength="200" placeholder="e.g. Used Samsung phone">
+                </div>
+
+                <div class="shm-field">
+                    <label for="category" data-i18n="form.category">Category *</label>
+                    <select name="category" id="category" required class="form-select">
+                        <option value="">— Select category —</option>
+                        {% for entry in categories %}
+                        <option value="{{ entry.config.slug }}">{{ entry.config.icon }} {{ entry.config.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="shm-field">
+                    <label for="description" data-i18n="shm.field.description">Description *</label>
+                    <textarea name="description" id="description" rows="6" required placeholder="Condition, features, reason for selling…"></textarea>
+                </div>
+
+                <div class="shm-field">
+                    <label for="price_text" data-i18n="shm.field.price">Price</label>
+                    <input type="text" name="price_text" id="price_text" maxlength="100" placeholder="e.g. ₹5000 or Negotiable">
+                </div>
+
+                <div class="shm-field">
+                    <label for="location" data-i18n="shm.field.location">City / area *</label>
+                    <input type="text" name="location" id="location" required maxlength="120" placeholder="e.g. Karwar" value="Karwar">
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 shm-field">
+                        <label for="provider_name" data-i18n="form.provider">Your name *</label>
+                        <input type="text" name="provider_name" id="provider_name" required>
+                    </div>
+                    <div class="col-md-6 shm-field">
+                        <label for="contact_phone" data-i18n="form.phone">Phone *</label>
+                        <input type="tel" name="contact_phone" id="contact_phone" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 shm-field">
+                        <label for="contact_email" data-i18n="contact.email">Email</label>
+                        <input type="email" name="contact_email" id="contact_email">
+                    </div>
+                    <div class="col-md-6 shm-field">
+                        <label for="whatsapp_number" data-i18n="form.whatsapp">WhatsApp</label>
+                        <input type="tel" name="whatsapp_number" id="whatsapp_number">
+                    </div>
+                </div>
+
+                <div class="shm-field">
+                    <label for="main_image" data-i18n="shm.field.photo">Photo</label>
+                    <input type="file" name="main_image" id="main_image" accept="image/*" class="form-control">
+                    <span class="shm-hint" data-i18n="shm.field.photo_hint">JPG, PNG or WebP recommended</span>
+                </div>
+
+                <button type="submit" class="shm-submit" data-i18n="shm.submit">Submit for review</button>
+            </form>
+        </div>
+        <p class="text-center mt-3">
+            <a href="{% url 'services:goods_hub' %}">&larr; <span data-i18n="shm.back_list">Back to listings</span></a>
+        </p>
+    </div>
+</div>
+{% endblock %}

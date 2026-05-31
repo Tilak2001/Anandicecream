@@ -1,0 +1,35 @@
+{% load static %}
+<div class="ice-i18n-bar">
+    <a href="{% url 'home' %}" class="ice-back-karwarian"><i class="fas fa-arrow-left"></i> Karwarian</a>
+    <select id="languageSelectIce" class="ice-lang-select" aria-label="Choose language">
+        <option value="en">English</option>
+        <option value="kn">ಕನ್ನಡ</option>
+        <option value="hi">हिन्दी</option>
+    </select>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+.ice-i18n-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem 1.5rem;
+    background: #1a202c;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+}
+.ice-back-karwarian { color: #ffb74d; font-weight: 600; }
+.ice-lang-select {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+</style>
+<script src="{% static 'js/i18n/translations.js' %}"></script>
+<script src="{% static 'js/i18n.js' %}"></script>

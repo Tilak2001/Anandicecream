@@ -1,0 +1,185 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Live Score - Cricket Dashboard{% endblock %}
+{% block nav_cricket %}active{% endblock %}
+
+{% block extra_style %}
+/* ===== CRICKET DASHBOARD — WP Plugin Style ===== */
+.cricket-stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 30px;
+}
+.cstat {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+}
+.cstat .num { font-size: 2.2rem; font-weight: 800; }
+.cstat .lbl { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text2); margin-top: 4px; }
+.cstat .num.total { color: #818cf8; }
+.cstat .num.live { color: #ef4444; }
+.cstat .num.upcoming { color: #f59e0b; }
+.cstat .num.completed { color: #22c55e; }
+
+.match-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+}
+
+.mcard {
+    background: linear-gradient(135deg, #131726 0%, #1a1d2e 100%);
+    border: 1px solid #252a3e;
+    border-radius: 14px;
+    padding: 20px;
+    position: relative;
+    transition: all 0.2s;
+}
+.mcard:hover { border-color: #3b4168; transform: translateY(-2px); }
+
+.mcard-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+.mcard-id { color: var(--text2); font-size: 0.8rem; }
+.mcard-badge {
+    padding: 4px 14px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.mcard-badge.done { background: #16a34a; color: #fff; }
+.mcard-badge.upcoming { background: #f59e0b; color: #000; }
+.mcard-badge.live { background: #ef4444; color: #fff; animation: pulse-badge 1.5s infinite; }
+@keyframes pulse-badge { 0%,100%{opacity:1} 50%{opacity:0.7} }
+
+.mcard-teams { margin-bottom: 14px; }
+.team-line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+.team-abbr {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.65rem; font-weight: 800; color: #fff;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+}
+.team-line .tname { flex: 1; font-weight: 600; font-size: 0.95rem; }
+.team-line .tscore { font-weight: 800; font-size: 1.05rem; color: #e2e8f0; }
+.vs-label { padding-left: 46px; font-size: 0.7rem; color: var(--text2); margin-bottom: 6px; }
+
+.mcard-meta {
+    font-size: 0.75rem;
+    color: var(--text2);
+    margin-bottom: 14px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.mcard-actions {
+    display: flex;
+    gap: 8px;
+    border-top: 1px solid #252a3e;
+    padding-top: 14px;
+}
+
+@media (max-width: 768px) {
+    .cricket-stats-row { grid-template-columns: repeat(2, 1fr); }
+    .match-cards-grid { grid-template-columns: 1fr; }
+}
+{% endblock %}
+
+{% block content %}
+<div class="topbar">
+    <div>
+        <h1>🏏 Live Score</h1>
+        <p style="color:var(--text2); font-size:0.85rem; margin-top:2px;">Manage your matches and live scores</p>
+    </div>
+    <a href="{% url 'cricket_add' %}" class="btn btn-danger" style="background:#ef4444;">
+        <i class="fas fa-plus-square"></i> Add New Match
+    </a>
+</div>
+
+<!-- Stats Row -->
+<div class="cricket-stats-row">
+    <div class="cstat">
+        <div class="num total">{{ total }}</div>
+        <div class="lbl">Total</div>
+    </div>
+    <div class="cstat">
+        <div class="num live">{{ live_count }}</div>
+        <div class="lbl">🔴 Live</div>
+    </div>
+    <div class="cstat">
+        <div class="num upcoming">{{ upcoming_count }}</div>
+        <div class="lbl">⏳ Upcoming</div>
+    </div>
+    <div class="cstat">
+        <div class="num completed">{{ completed_count }}</div>
+        <div class="lbl">✅ Completed</div>
+    </div>
+</div>
+
+<!-- Match Cards -->
+<div class="match-cards-grid">
+    {% for match in matches %}
+    <div class="mcard">
+        <div class="mcard-top">
+            <span class="mcard-id">#{{ match.id }}</span>
+            <span class="mcard-badge {% if match.status == 'completed' %}done{% elif match.status == 'live' %}live{% elif match.status == 'upcoming' %}upcoming{% else %}done{% endif %}">
+                {% if match.status == 'live' %}🔴 LIVE{% elif match.status == 'completed' %}✅ DONE{% elif match.status == 'upcoming' %}⏳ UPCOMING{% else %}{{ match.status|upper }}{% endif %}
+            </span>
+        </div>
+
+        <div class="mcard-teams">
+            <div class="team-line">
+                <div class="team-abbr" style="background: linear-gradient(135deg, #e74c3c, #c0392b);">{{ match.team1_abbr }}</div>
+                <span class="tname">{{ match.team1_name }}</span>
+                <span class="tscore">{% if match.team1_score %}{{ match.team1_score }}{% endif %}</span>
+            </div>
+            <div class="vs-label">vs</div>
+            <div class="team-line">
+                <div class="team-abbr" style="background: linear-gradient(135deg, #3498db, #2980b9);">{{ match.team2_abbr }}</div>
+                <span class="tname">{{ match.team2_name }}</span>
+                <span class="tscore">{% if match.team2_score %}{{ match.team2_score }}{% endif %}</span>
+            </div>
+        </div>
+
+        <div class="mcard-meta">
+            <span>T{{ match.overs_limit }}</span>
+            {% if match.venue %}<span>📍 {{ match.venue }}</span>{% endif %}
+            <span>📅 {{ match.match_date|date:"d M Y" }}</span>
+        </div>
+
+        <div class="mcard-actions">
+            <a href="{% url 'cricket_live_update' match.id %}" class="btn btn-sm" style="background:#14b8a6; color:#fff;">
+                <i class="fas fa-bolt"></i> Update Score
+            </a>
+            <a href="{% url 'cricket_edit' match.id %}" class="btn btn-sm btn-warning">
+                <i class="fas fa-edit"></i> Edit
+            </a>
+            <a href="{% url 'cricket_delete' match.id %}" class="btn btn-sm btn-outline" onclick="return confirm('Delete this match?')" style="color:#ef4444; border-color:#ef444466;">
+                <i class="fas fa-trash"></i>
+            </a>
+        </div>
+    </div>
+    {% empty %}
+    <div class="empty-state" style="grid-column: 1/-1;">
+        <i class="fas fa-baseball-ball"></i>
+        <p>No matches yet. <a href="{% url 'cricket_add' %}" style="color:var(--accent2)">Add your first match</a></p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

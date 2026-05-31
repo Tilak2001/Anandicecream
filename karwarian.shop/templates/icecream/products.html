@@ -1,0 +1,498 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Products - Anand Ice Cream</title>
+    <link rel="stylesheet" href="{% static 'icecream/css/styles.css' %}">
+    <style>
+        .products-page-hero {
+            text-align: center;
+            padding: 3rem 2rem 1rem;
+            color: white;
+        }
+
+        .products-page-hero h1 {
+            font-size: 2.8rem;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+            margin-bottom: 0.5rem;
+        }
+
+        .products-page-hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'icecream/includes/i18n_bar.html' %}
+    <nav>
+        <div class="nav-container">
+            <a href="/ice-cream/" class="logo">
+                <span class="logo-icon">🍦</span>
+                <span data-i18n="ice.site_name">Anand Ice Cream</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="{% url 'icecream:home' %}" data-i18n="ice.nav.home">Home</a></li>
+                <li><a href="{% url 'icecream:products' %}" class="active" data-i18n="ice.nav.products">Products</a></li>
+                <li><a href="{% url 'icecream:home' %}#about" data-i18n="ice.nav.about">About Us</a></li>
+                <li><a href="{% url 'icecream:home' %}#contact" data-i18n="ice.nav.contact">Contact</a></li>
+                <li><a href="{% url 'icecream:admin_login' %}" data-i18n="ice.nav.admin">Admin</a></li>
+            </ul>
+            <a href="/ice-cream/cart/" class="cart-icon">
+                🛒
+                <span class="cart-count" id="cartCount">0</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="products-page-hero">
+        <h1 data-i18n="ice.products.title">🍦 Our Ice Cream Collection 🍦</h1>
+        <p data-i18n="ice.products.subtitle">Handcrafted with love — pick your favourite and enjoy!</p>
+    </div>
+
+    <!-- Product Cards -->
+    <section class="products-section">
+        <div class="cards-grid">
+            <!-- Card 1: Kulfi -->
+            <div class="ice-cream-card" id="kulfiCard" onclick="window.location.href='{% url 'icecream:kulfi' %}'">
+                <div class="card-image kulfi"><img src="{% static 'icecream/asset/icimg/cards/card_kulfi.png' %}" alt="Kulfi"
+                        style="width:100%;height:100%;object-fit:cover;"></div>
+                <div class="card-content">
+                    <div class="card-title">Kulfi</div>
+                    <div class="card-description">Traditional Indian frozen dessert with authentic flavors of cardamom,
+                        saffron &amp; pistachios</div>
+                </div>
+            </div>
+
+            <!-- Card 2: Cup -->
+            <div class="ice-cream-card" id="cupCard" onclick="window.location.href='{% url 'icecream:cup' %}'">
+                <div class="card-image cup"><img src="{% static 'icecream/asset/icimg/cards/card_cup.png' %}" alt="Cup Ice Cream"
+                        style="width:100%;height:100%;object-fit:cover;"></div>
+                <div class="card-content">
+                    <div class="card-title">Cup Ice Cream</div>
+                    <div class="card-description">Creamy ice cream served in convenient cups - perfect for on-the-go
+                        enjoyment</div>
+                </div>
+            </div>
+
+            <!-- Card 3: Chocbar -->
+            <div class="ice-cream-card" id="chocbarCard" onclick="window.location.href='{% url 'icecream:chocobar' %}'">
+                <div class="card-image chocbar"><img src="{% static 'icecream/asset/icimg/cards/card_chocbar.png' %}"
+                        alt="Chocobar" style="width:100%;height:100%;object-fit:cover;"></div>
+                <div class="card-content">
+                    <div class="card-title">Chocbar</div>
+                    <div class="card-description">Rich chocolate coated ice cream bar - a chocolate lover's dream come
+                        true</div>
+                </div>
+            </div>
+
+            <!-- Card 4: Dolly -->
+            <div class="ice-cream-card" id="dollyCard" onclick="openDollyPage()">
+                <div class="card-image dolly"><img src="{% static 'icecream/asset/icimg/cards/card_dolly.png' %}" alt="Dolly"
+                        style="width:100%;height:100%;object-fit:cover;"></div>
+                <div class="card-content">
+                    <div class="card-title">Dolly</div>
+                    <div class="card-description">Colorful ice lolly with fruity flavors - a refreshing treat for all
+                        ages</div>
+                </div>
+            </div>
+
+            <!-- Card 5: Cone -->
+            <div class="ice-cream-card" id="coneCard" onclick="window.location.href='{% url 'icecream:cone' %}'">
+                <div class="card-image cone"><img src="{% static 'icecream/asset/icimg/cards/card_cone.png' %}" alt="Cone"
+                        style="width:100%;height:100%;object-fit:cover;"></div>
+                <div class="card-content">
+                    <div class="card-title">Cone</div>
+                    <div class="card-description">Classic crispy waffle cone filled with premium ice cream flavors</div>
+                </div>
+            </div>
+
+            <!-- Card 6: Gadbad -->
+            <div class="ice-cream-card" id="gadbadCard" onclick="window.location.href='{% url 'icecream:gadbad' %}'">
+                <div class="card-image gadbad"><img src="{% static 'icecream/asset/icimg/cards/card_gadbad.png' %}" alt="Gadbad"
+                        style="width:100%;height:100%;object-fit:cover;"></div>
+                <div class="card-content">
+                    <div class="card-title">Gadbad</div>
+                    <div class="card-description">Spectacular layers of ice cream, fruits, nuts, jelly &amp; dry fruits
+                        - a complete dessert experience</div>
+                </div>
+            </div>
+
+            <!-- Card 7: Scoop -->
+            <div class="ice-cream-card" id="scoopCard" onclick="openScoopPage()">
+                <div class="card-image scoop"><img src="{% static 'icecream/asset/icimg/cards/card_scoop.png' %}" alt="Scoop"
+                        style="width:100%;height:100%;object-fit:cover;"></div>
+                <div class="card-content">
+                    <div class="card-title">Scoop Ice Cream</div>
+                    <div class="card-description">Hand-scooped premium ice cream with endless flavor combinations</div>
+                </div>
+            </div>
+
+            <!-- Card 8: Family Pack -->
+            <div class="ice-cream-card" id="familyCard" onclick="openFamilyPage()">
+                <div class="card-image family"><img src="{% static 'icecream/asset/icimg/cards/card_family.png' %}"
+                        alt="Family Pack" style="width:100%;height:100%;object-fit:cover;"></div>
+                <div class="card-content">
+                    <div class="card-title">Family Pack</div>
+                    <div class="card-description">Large family-sized tubs perfect for sharing special moments with loved
+                        ones</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- ALL PRODUCT MODALS (copied from index.html)                  -->
+    <!-- ============================================================ -->
+
+    <!-- Kulfi modal removed — kulfi now has its own dedicated page (kulfi.html) -->
+
+    <!-- Cup Ice Cream Modal -->
+    <div class="product-modal" id="cupModal">
+        <div class="product-page">
+            <button class="close-btn" onclick="closeCupPage()">×</button>
+            <div class="product-header">
+                <h1 class="product-title-large">Cup Ice Cream</h1>
+            </div>
+            <div class="product-body">
+                <div class="option-section">
+                    <label class="option-label">Choose Your Flavor</label>
+                    <div class="flavor-grid" id="cupFlavorGrid">
+                        <div class="flavor-option selected" onclick="selectCupFlavor(this, 'Strawberry', 10)">
+                            <div class="flavor-emoji">🍓</div>
+                            <div class="flavor-name">Strawberry</div>
+                            <div class="flavor-price">₹10</div>
+                        </div>
+                        <div class="flavor-option" onclick="selectCupFlavor(this, 'Chocolate', 10)">
+                            <div class="flavor-emoji">🍫</div>
+                            <div class="flavor-name">Chocolate</div>
+                            <div class="flavor-price">₹10</div>
+                        </div>
+                        <div class="flavor-option" onclick="selectCupFlavor(this, 'Vanilla', 10)">
+                            <div class="flavor-emoji">🍦</div>
+                            <div class="flavor-name">Vanilla</div>
+                            <div class="flavor-price">₹10</div>
+                        </div>
+                        <div class="flavor-option" onclick="selectCupFlavor(this, 'Mango', 10)">
+                            <div class="flavor-emoji">🥭</div>
+                            <div class="flavor-name">Mango</div>
+                            <div class="flavor-price">₹10</div>
+                        </div>
+                        <div class="flavor-option" onclick="selectCupFlavor(this, 'Butterscotch', 10)">
+                            <div class="flavor-emoji">🧈</div>
+                            <div class="flavor-name">Butterscotch</div>
+                            <div class="flavor-price">₹10</div>
+                        </div>
+                        <div class="flavor-option" onclick="selectCupFlavor(this, 'Pista', 10)">
+                            <div class="flavor-emoji">🌿</div>
+                            <div class="flavor-name">Pista</div>
+                            <div class="flavor-price">₹10</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="option-section">
+                    <label class="option-label">Select Quantity</label>
+                    <div class="quantity-selector">
+                        <button class="quantity-btn" onclick="decreaseCupQuantity()">-</button>
+                        <input type="number" id="cupQuantity" value="1" min="1" oninput="onCupQtyInput(this)">
+                        <button class="quantity-btn" onclick="increaseCupQuantity()">+</button>
+                    </div>
+                </div>
+                <div class="price-cart-row">
+                    <div class="price-display">
+                        <div class="price-label">Total Price</div>
+                        <div class="price-amount" id="cupTotalPrice">₹10</div>
+                    </div>
+                    <button class="add-to-cart-btn" id="cupCartBtn" onclick="addCupToCart()">🛒 Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gadbad Modal -->
+    <div class="product-modal" id="gadbadModal">
+        <div class="product-page">
+            <button class="close-btn" onclick="closeGadbadPage()">×</button>
+            <div class="product-header">
+                <h1 class="product-title-large">Gadbad</h1>
+            </div>
+            <div class="product-body">
+                <div class="option-section">
+                    <label class="option-label">Choose Your Size</label>
+                    <div class="flavor-grid" id="gadbadFlavorGrid">
+                        <div class="flavor-option selected" onclick="selectGadbadFlavor(this, 'Small', 20)">
+                            <div class="flavor-emoji">🍨</div>
+                            <div class="flavor-name">Small</div>
+                            <div class="flavor-price">₹20</div>
+                        </div>
+                        <div class="flavor-option" onclick="selectGadbadFlavor(this, 'Medium', 40)">
+                            <div class="flavor-emoji">🍨</div>
+                            <div class="flavor-name">Medium</div>
+                            <div class="flavor-price">₹40</div>
+                        </div>
+                        <div class="flavor-option" onclick="selectGadbadFlavor(this, 'Large', 60)">
+                            <div class="flavor-emoji">🍨</div>
+                            <div class="flavor-name">Large</div>
+                            <div class="flavor-price">₹60</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="option-section">
+                    <label class="option-label">Select Quantity</label>
+                    <div class="quantity-selector">
+                        <button class="quantity-btn" onclick="decreaseGadbadQty()">-</button>
+                        <input type="number" id="gadbadQuantity" value="1" min="1" oninput="onGadbadQtyInput(this)">
+                        <button class="quantity-btn" onclick="increaseGadbadQty()">+</button>
+                    </div>
+                </div>
+                <div class="price-cart-row">
+                    <div class="price-display">
+                        <div class="price-label">Total Price</div>
+                        <div class="price-amount" id="gadbadTotalPrice">₹20</div>
+                    </div>
+                    <button class="add-to-cart-btn" id="gadbadCartBtn" onclick="addGadbadToCart()">🛒 Add to
+                        Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dolly Modal -->
+    <div class="product-modal" id="dollyModal">
+        <div class="product-page">
+            <button class="close-btn" onclick="closeDollyPage()">×</button>
+            <div class="product-header">
+                <h1 class="product-title-large">Dolly</h1>
+            </div>
+            <div class="product-body">
+                <div class="option-section">
+                    <label class="option-label">Select Quantity</label>
+                    <div class="quantity-selector">
+                        <button class="quantity-btn" onclick="decreaseDollyQty()">-</button>
+                        <input type="number" id="dollyQuantity" value="1" min="1" oninput="onDollyQtyInput(this)">
+                        <button class="quantity-btn" onclick="increaseDollyQty()">+</button>
+                    </div>
+                </div>
+                <div class="price-cart-row">
+                    <div class="price-display">
+                        <div class="price-label">Total Price</div>
+                        <div class="price-amount" id="dollyTotalPrice">&#8377;20</div>
+                    </div>
+                    <button class="add-to-cart-btn" id="dollyCartBtn" onclick="addDollyToCart()">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cone Modal -->
+    <div class="product-modal" id="coneModal">
+        <div class="product-page">
+            <button class="close-btn" onclick="closeConePage()">×</button>
+            <div class="product-header">
+                <h1 class="product-title-large">Cone</h1>
+            </div>
+            <div class="product-body">
+                <div class="option-section">
+                    <label class="option-label">Choose Your Flavor</label>
+                    <div class="flavor-grid" id="coneFlavorGrid">
+                        <div class="flavor-option selected" onclick="selectConeFlavor(this, 'Chocolate', 40)">
+                            <div class="flavor-emoji">🍫</div>
+                            <div class="flavor-name">Chocolate</div>
+                            <div class="flavor-price">₹40</div>
+                        </div>
+                        <div class="flavor-option" onclick="selectConeFlavor(this, 'Vanilla', 40)">
+                            <div class="flavor-emoji">🍦</div>
+                            <div class="flavor-name">Vanilla</div>
+                            <div class="flavor-price">₹40</div>
+                        </div>
+                        <div class="flavor-option" onclick="selectConeFlavor(this, 'Butterscotch', 40)">
+                            <div class="flavor-emoji">🧈</div>
+                            <div class="flavor-name">Butterscotch</div>
+                            <div class="flavor-price">₹40</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="option-section">
+                    <label class="option-label">Select Quantity</label>
+                    <div class="quantity-selector">
+                        <button class="quantity-btn" onclick="decreaseConeQty()">-</button>
+                        <input type="number" id="coneQuantity" value="1" min="1" oninput="onConeQtyInput(this)">
+                        <button class="quantity-btn" onclick="increaseConeQty()">+</button>
+                    </div>
+                </div>
+                <div class="price-cart-row">
+                    <div class="price-display">
+                        <div class="price-label">Total Price</div>
+                        <div class="price-amount" id="coneTotalPrice">&#8377;40</div>
+                    </div>
+                    <button class="add-to-cart-btn" id="coneCartBtn" onclick="addConeToCart()">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scoop Ice Cream Modal -->
+    <div class="product-modal" id="scoopModal">
+        <div class="product-page">
+            <button class="close-btn" onclick="closeScoopPage()">×</button>
+            <div class="product-header">
+                <h1 class="product-title-large">Scoop Ice Cream</h1>
+            </div>
+            <div class="product-body">
+                <div class="option-section">
+                    <label class="option-label">Choose Your Flavor</label>
+                    <div class="flavor-grid" id="scoopFlavorGrid">
+                        <div class="flavor-option selected" onclick="selectScoopFlavor(this, 'Chocolate', 20)">
+                            <div class="flavor-emoji">🍫</div>
+                            <div class="flavor-name">Chocolate</div>
+                            <div class="flavor-price">₹20</div>
+                        </div>
+                        <div class="flavor-option" onclick="selectScoopFlavor(this, 'Vanilla', 20)">
+                            <div class="flavor-emoji">🍦</div>
+                            <div class="flavor-name">Vanilla</div>
+                            <div class="flavor-price">₹20</div>
+                        </div>
+                        <div class="flavor-option" onclick="selectScoopFlavor(this, 'Strawberry', 20)">
+                            <div class="flavor-emoji">🍓</div>
+                            <div class="flavor-name">Strawberry</div>
+                            <div class="flavor-price">₹20</div>
+                        </div>
+                        <div class="flavor-option" onclick="selectScoopFlavor(this, 'Mango', 20)">
+                            <div class="flavor-emoji">🥭</div>
+                            <div class="flavor-name">Mango</div>
+                            <div class="flavor-price">₹20</div>
+                        </div>
+                        <div class="flavor-option" onclick="selectScoopFlavor(this, 'Pista', 20)">
+                            <div class="flavor-emoji">🌿</div>
+                            <div class="flavor-name">Pista</div>
+                            <div class="flavor-price">₹20</div>
+                        </div>
+                        <div class="flavor-option" onclick="selectScoopFlavor(this, 'Butterscotch', 20)">
+                            <div class="flavor-emoji">🧈</div>
+                            <div class="flavor-name">Butterscotch</div>
+                            <div class="flavor-price">₹20</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="option-section">
+                    <label class="option-label">Select Quantity</label>
+                    <div class="quantity-selector">
+                        <button class="quantity-btn" onclick="decreaseScoopQty()">-</button>
+                        <input type="number" id="scoopQuantity" value="1" min="1" oninput="onScoopQtyInput(this)">
+                        <button class="quantity-btn" onclick="increaseScoopQty()">+</button>
+                    </div>
+                </div>
+                <div class="price-cart-row">
+                    <div class="price-display">
+                        <div class="price-label">Total Price</div>
+                        <div class="price-amount" id="scoopTotalPrice">&#8377;20</div>
+                    </div>
+                    <button class="add-to-cart-btn" id="scoopCartBtn" onclick="addScoopToCart()">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chocbar Modal -->
+    <div class="product-modal" id="chocbarModal">
+        <div class="product-page">
+            <button class="close-btn" onclick="closeChocbarPage()">×</button>
+            <div class="product-header">
+                <h1 class="product-title-large">Chocbar</h1>
+            </div>
+            <div class="product-body">
+                <div class="option-section">
+                    <label class="option-label">Choose Your Flavor</label>
+                    <div class="flavor-grid" id="chocbarFlavorGrid">
+                        <div class="flavor-option selected" onclick="selectChocbarSize(this, 'Chocobar', 20)">
+                            <div class="flavor-emoji">🍫</div>
+                            <div class="flavor-name">Chocobar</div>
+                            <div class="flavor-price">₹20</div>
+                        </div>
+                        <div class="flavor-option" onclick="selectChocbarSize(this, 'Nutty Chocobar', 40)">
+                            <div class="flavor-emoji">🥜</div>
+                            <div class="flavor-name">Nutty Chocobar</div>
+                            <div class="flavor-price">₹40</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="option-section">
+                    <label class="option-label">Select Quantity</label>
+                    <div class="quantity-selector">
+                        <button class="quantity-btn" onclick="decreaseChocbarQty()">-</button>
+                        <input type="number" id="chocbarQuantity" value="1" min="1" oninput="onChocbarQtyInput(this)">
+                        <button class="quantity-btn" onclick="increaseChocbarQty()">+</button>
+                    </div>
+                </div>
+                <div class="price-cart-row">
+                    <div class="price-display">
+                        <div class="price-label">Total Price</div>
+                        <div class="price-amount" id="chocbarTotalPrice">&#8377;20</div>
+                    </div>
+                    <button class="add-to-cart-btn" id="chocbarCartBtn" onclick="addChocbarToCart()">Add to
+                        Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Family Pack Modal -->
+    <div class="product-modal" id="familyModal">
+        <div class="product-page">
+            <button class="close-btn" onclick="closeFamilyPage()">×</button>
+            <div class="product-header">
+                <h1 class="product-title-large">Family Pack</h1>
+            </div>
+            <div class="product-body">
+                <div class="option-section">
+                    <label class="option-label">Choose Your Size</label>
+                    <div class="flavor-grid" id="familyFlavorGrid">
+                        <div class="flavor-option selected" onclick="selectFamilySize(this, 'Half Liter', 120)">
+                            <div class="flavor-emoji">&#128230;</div>
+                            <div class="flavor-name">Half Liter</div>
+                            <div class="flavor-price">&#8377;120</div>
+                        </div>
+                        <div class="flavor-option" onclick="selectFamilySize(this, '1 Liter', 200)">
+                            <div class="flavor-emoji">&#127873;</div>
+                            <div class="flavor-name">1 Liter</div>
+                            <div class="flavor-price">&#8377;200</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="option-section">
+                    <label class="option-label">Select Quantity</label>
+                    <div class="quantity-selector">
+                        <button class="quantity-btn" onclick="decreaseFamilyQty()">-</button>
+                        <input type="number" id="familyQuantity" value="1" min="1" oninput="onFamilyQtyInput(this)">
+                        <button class="quantity-btn" onclick="increaseFamilyQty()">+</button>
+                    </div>
+                </div>
+                <div class="price-cart-row">
+                    <div class="price-display">
+                        <div class="price-label">Total Price</div>
+                        <div class="price-amount" id="familyTotalPrice">&#8377;120</div>
+                    </div>
+                    <button class="add-to-cart-btn" id="familyCartBtn" onclick="addFamilyToCart()">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <p class="footer-brand">🍦 Anand Ice Cream</p>
+            <p class="footer-copy">© 2026 Anand Ice Cream. All rights reserved.</p>
+            <p class="footer-tagline">Made with ❤️ for ice cream lovers</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'icecream/js/cart.js' %}"></script>
+    <script src="{% static 'icecream/js/script.js' %}"></script>
+</body>
+
+</html>

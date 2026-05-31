@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Matrimony - Sign In Required{% endblock %}
+
+{% block extra_css %}
+<style>
+.matrimony-gate {
+    max-width: 520px;
+    margin: 120px auto 80px;
+    padding: 0 1.5rem;
+    text-align: center;
+}
+.matrimony-gate-card {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
+}
+.matrimony-gate-icon {
+    width: 88px;
+    height: 88px;
+    margin: 0 auto 1.25rem;
+    background: linear-gradient(135deg, #f48fb1, #c2185b);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+}
+.matrimony-gate h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+}
+.matrimony-gate p {
+    color: var(--text-secondary);
+    margin-bottom: 1.75rem;
+    line-height: 1.6;
+}
+.gate-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+.gate-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 14px 24px;
+    background: linear-gradient(135deg, #e91e63, #c2185b);
+    color: #fff !important;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.gate-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(233, 30, 99, 0.35);
+}
+.gate-btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 12px 24px;
+    border: 2px solid var(--teal);
+    color: var(--teal) !important;
+    border-radius: 12px;
+    font-weight: 600;
+}
+.gate-btn-outline:hover {
+    background: var(--teal-light);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="matrimony-gate">
+    <div class="matrimony-gate-card">
+        <div class="matrimony-gate-icon">💍</div>
+        <h1 data-i18n="matrimony.gate.title">Matrimony Profiles</h1>
+        <p data-i18n="matrimony.gate.message">Sign in to view verified matrimony profiles and contact details in the Karwar community. Your privacy is important to us.</p>
+        <div class="gate-actions">
+            <a href="{% url 'user_login' %}?next={{ next|urlencode }}" class="gate-btn-primary">
+                <i class="fas fa-sign-in-alt"></i>
+                <span data-i18n="matrimony.gate.sign_in">Sign In</span>
+            </a>
+            <a href="{% url 'user_register' %}?next={{ next|urlencode }}" class="gate-btn-outline">
+                <i class="fas fa-user-plus"></i>
+                <span data-i18n="matrimony.gate.create_account">Create Account</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

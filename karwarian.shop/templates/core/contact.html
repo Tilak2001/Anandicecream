@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact Us - Karwarian.shop{% endblock %}
+{% block nav_contact %}active{% endblock %}
+
+{% block content %}
+<div class="page-hero">
+    <h1 data-i18n="contact.title">Contact Us</h1>
+    <p data-i18n="contact.subtitle">We'd love to hear from you</p>
+</div>
+
+<div class="contact-form-section">
+    <form class="contact-form" method="POST" action="{% url 'contact' %}">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="name" data-i18n="contact.name">Your Name</label>
+            <input type="text" id="name" name="name" data-i18n-placeholder="contact.ph.name" placeholder="Enter your full name" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="email" data-i18n="contact.email">Email Address</label>
+            <input type="email" id="email" name="email" data-i18n-placeholder="contact.ph.email" placeholder="Enter your email" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="phone" data-i18n="contact.phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" data-i18n-placeholder="contact.ph.phone" placeholder="Enter your phone number">
+        </div>
+        
+        <div class="form-group">
+            <label for="subject" data-i18n="contact.subject">Subject</label>
+            <input type="text" id="subject" name="subject" data-i18n-placeholder="contact.ph.subject" placeholder="What is this about?" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="message" data-i18n="contact.message">Your Message</label>
+            <textarea id="message" name="message" data-i18n-placeholder="contact.ph.message" placeholder="Write your message here..." rows="5" required></textarea>
+        </div>
+        
+        <button type="submit" class="submit-btn">
+            <i class="fas fa-paper-plane"></i> <span data-i18n="common.submit">Submit</span>
+        </button>
+    </form>
+</div>
+{% endblock %}

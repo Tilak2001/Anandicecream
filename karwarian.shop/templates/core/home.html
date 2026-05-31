@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block nav_home %}active{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-bg" style="background-image: url('{% static 'images/karwar-hero.png' %}')"></div>
+    <div class="hero-content">
+        <div class="hero-badge">
+            <i class="fas fa-star"></i> <span data-i18n="home.welcome">Welcome to Karwar</span>
+        </div>
+        <h1 class="hero-title" data-i18n="home.hero_title">ಕಾರವಾರ — God's Own Coast</h1>
+        <p class="hero-subtitle" data-i18n="home.hero_subtitle">Discover the pearl of coastal Karnataka — pristine beaches, vibrant community, and rich culture all in one place.</p>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="stats-section">
+    <div class="stats-grid">
+        <div class="stat-item">
+            <div class="stat-icon"><i class="fas fa-umbrella-beach"></i></div>
+            <div class="stat-number">{{ site_stats.beaches_count|default:"12" }}+</div>
+            <div class="stat-label" data-i18n="stats.beaches">Beaches</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-icon"><i class="fas fa-umbrella-beach"></i></div>
+            <div class="stat-number">{{ site_stats.matrimony_profiles|default:"500" }}+</div>
+            <div class="stat-label" data-i18n="stats.matrimony">Matrimony Profiles</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-icon"><i class="fas fa-umbrella-beach"></i></div>
+            <div class="stat-number">{{ site_stats.events_per_year|default:"50" }}+</div>
+            <div class="stat-label" data-i18n="stats.events">Events/Year</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-icon"><i class="fas fa-umbrella-beach"></i></div>
+            <div class="stat-number">{{ site_stats.local_vendors|default:"200" }}+</div>
+            <div class="stat-label" data-i18n="stats.vendors">Local Vendors</div>
+        </div>
+    </div>
+</section>
+
+<!-- Explore Karwar Section -->
+<section class="explore-section">
+    <div class="section-container">
+        <h2 class="section-title" data-i18n="home.explore_title">Explore Karwar</h2>
+        <p class="section-subtitle" data-i18n="home.explore_subtitle">Everything you need, all in one place</p>
+        
+        <div class="explore-grid">
+            <!-- Places to Visit -->
+            <a href="{% url 'places:list' %}" class="explore-card explore-card-with-bg" style="background-image: linear-gradient(rgba(15, 17, 23, 0.75), rgba(15, 17, 23, 0.95)), url('{% static 'images/places-card.png' %}'); background-size: cover; background-position: center; border-color: rgba(45, 143, 123, 0.3);">
+                <div class="card-icon blue" style="background: rgba(21,101,192,0.2);">
+                    <i class="fas fa-map-marked-alt" style="color: #64b5f6;"></i>
+                </div>
+                <h3 class="card-title" style="color: #ffffff;" data-i18n="card.places.title">Places to Visit</h3>
+                <p class="card-desc" style="color: #e2e8f0;" data-i18n="card.places.desc">Beaches, forts & islands</p>
+            </a>
+
+            <!-- Cricket Score -->
+            <a href="{% url 'cricket_score' %}" class="explore-card explore-card-with-bg" style="background-image: linear-gradient(rgba(15, 17, 23, 0.75), rgba(15, 17, 23, 0.95)), url('{% static 'images/cricket-card.png' %}'); background-size: cover; background-position: center; border-color: rgba(34, 197, 94, 0.3);">
+                <div class="card-icon green" style="background: rgba(46,125,50,0.2);">
+                    <i class="fas fa-baseball-ball" style="color: #81c784;"></i>
+                </div>
+                <h3 class="card-title" style="color: #ffffff;" data-i18n="card.cricket.title">Cricket Score</h3>
+                <p class="card-desc" style="color: #e2e8f0;" data-i18n="card.cricket.desc">Live match updates</p>
+            </a>
+
+            <!-- Karwar News -->
+            <a href="{% url 'news:list' %}" class="explore-card explore-card-with-bg" style="background-image: linear-gradient(rgba(15, 17, 23, 0.75), rgba(15, 17, 23, 0.95)), url('{% static 'images/news-card.png' %}'); background-size: cover; background-position: center; border-color: rgba(239, 68, 68, 0.3);">
+                <div class="card-icon red" style="background: rgba(211,47,47,0.2);">
+                    <i class="fas fa-newspaper" style="color: #e57373;"></i>
+                </div>
+                <h3 class="card-title" style="color: #ffffff;" data-i18n="card.news.title">Karwar News</h3>
+                <p class="card-desc" style="color: #e2e8f0;" data-i18n="card.news.desc">Latest Local Updates</p>
+            </a>
+
+            <!-- Bus Timings -->
+            <a href="{% url 'bus_timings' %}" class="explore-card explore-card-with-bg" style="background-image: linear-gradient(rgba(15, 17, 23, 0.75), rgba(15, 17, 23, 0.95)), url('{% static 'images/bus-card.png' %}'); background-size: cover; background-position: center; border-color: rgba(245, 158, 11, 0.3);">
+                <div class="card-icon orange" style="background: rgba(230,81,0,0.2);">
+                    <i class="fas fa-bus" style="color: #ffb74d;"></i>
+                </div>
+                <h3 class="card-title" style="color: #ffffff;" data-i18n="card.bus.title">Bus Timings</h3>
+                <p class="card-desc" style="color: #e2e8f0;" data-i18n="card.bus.desc">Public Transport Schedules</p>
+            </a>
+
+            <!-- Matrimony -->
+            <a href="{% url 'matrimony_list' %}" class="explore-card explore-card-with-bg" style="background-image: linear-gradient(rgba(15, 17, 23, 0.75), rgba(15, 17, 23, 0.95)), url('{% static 'images/matrimony-card.png' %}'); background-size: cover; background-position: center; border-color: rgba(244, 143, 177, 0.3);">
+                <div class="card-icon pink" style="background: rgba(194,24,91,0.2);">
+                    <i class="fas fa-heart" style="color: #f48fb1;"></i>
+                </div>
+                <h3 class="card-title" style="color: #ffffff;" data-i18n="card.matrimony.title">Matrimony</h3>
+                <p class="card-desc" style="color: #e2e8f0;" data-i18n="card.matrimony.desc">Find Your Life Partner</p>
+            </a>
+
+            <!-- Function Services -->
+            <a href="{% url 'services:function_hub' %}" class="explore-card explore-card-with-bg" style="background-image: linear-gradient(rgba(15, 17, 23, 0.75), rgba(15, 17, 23, 0.95)), url('{% static 'images/services-card.png' %}'); background-size: cover; background-position: center; border-color: rgba(186, 104, 200, 0.3);">
+                <div class="card-icon purple" style="background: rgba(123,31,162,0.2);">
+                    <i class="fas fa-glass-cheers" style="color: #ba68c8;"></i>
+                </div>
+                <h3 class="card-title" style="color: #ffffff;" data-i18n="card.functions.title">Function Services</h3>
+                <p class="card-desc" style="color: #e2e8f0;" data-i18n="card.functions.desc">Event Planning & Services</p>
+            </a>
+
+            <!-- Jobs -->
+            <a href="{% url 'jobs:list' %}" class="explore-card explore-card-with-bg" style="background-image: linear-gradient(rgba(15, 17, 23, 0.75), rgba(15, 17, 23, 0.95)), url('{% static 'images/jobs-card.png' %}'); background-size: cover; background-position: center; border-color: rgba(92, 107, 192, 0.3);">
+                <div class="card-icon indigo" style="background: rgba(48,63,159,0.2);">
+                    <i class="fas fa-briefcase" style="color: #9fa8da;"></i>
+                </div>
+                <h3 class="card-title" style="color: #ffffff;" data-i18n="card.jobs.title">Jobs</h3>
+                <p class="card-desc" style="color: #e2e8f0;" data-i18n="card.jobs.desc">Career Opportunities</p>
+            </a>
+
+            <!-- Goods And Services -->
+            <a href="{% url 'services:goods_hub' %}" class="explore-card explore-card-with-bg" style="background-image: linear-gradient(rgba(15, 17, 23, 0.75), rgba(15, 17, 23, 0.95)), url('{% static 'images/goods-card.png' %}'); background-size: cover; background-position: center; border-color: rgba(77, 182, 172, 0.3);">
+                <div class="card-icon teal" style="background: rgba(0,121,107,0.2);">
+                    <i class="fas fa-shopping-cart" style="color: #4db6ac;"></i>
+                </div>
+                <h3 class="card-title" style="color: #ffffff;" data-i18n="card.second_hand.title">Second Hand</h3>
+                <p class="card-desc" style="color: #e2e8f0;" data-i18n="card.second_hand.desc">Buy & sell used items in Karwar</p>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- About Karwar Section -->
+<section class="about-section">
+    <div class="about-container">
+        <div class="about-text-area">
+            <h2 class="about-title" data-i18n="home.about_title">About Karwar</h2>
+            <p class="about-text" data-i18n="home.about_text">Karwar is the district headquarters of Uttara Kannada, nestled between the Arabian Sea and the Western Ghats. Known for its untouched beaches, naval heritage, and the serene beauty of the Kali River, Karwar is a hidden gem of coastal Karnataka.</p>
+            <a href="{% url 'about' %}" class="about-btn">
+                <span data-i18n="home.about_btn">Learn More</span> <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        <div class="about-visual">
+            <i class="fas fa-water"></i>
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<script>
+// Scroll-triggered animations
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+        }
+    });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.explore-card, .stat-item').forEach(el => {
+    el.classList.add('animate-on-scroll');
+    observer.observe(el);
+});
+</script>
+{% endblock %}
+
+{% endblock %}

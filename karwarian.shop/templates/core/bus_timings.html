@@ -1,0 +1,458 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Bus Timings - Karwarian.shop{% endblock %}
+
+{% block content %}
+<div class="bus-page">
+
+    <!-- ══════════ SEARCH PAGE ══════════ -->
+    <div id="searchPage">
+        <div class="bus-search-card">
+            <h2 class="bus-search-title">🔍 <span data-i18n="bus.find_title">Find Your Bus</span></h2>
+
+            <form id="searchForm" onsubmit="searchBuses(event)">
+                <div class="bus-route-group">
+                    <!-- FROM INPUT -->
+                    <div class="bus-input-wrap">
+                        <label data-i18n="bus.from">From</label>
+                        <input
+                            type="text"
+                            id="fromInput"
+                            class="bus-input"
+                            value="Karwar"
+                            readonly
+                            style="opacity: 0.7; cursor: not-allowed;"
+                        />
+                    </div>
+
+                    <!-- TO INPUT -->
+                    <div class="bus-input-wrap">
+                        <label data-i18n="bus.to">To</label>
+                        <div style="position:relative;">
+                            <input
+                                type="text"
+                                id="toInput"
+                                class="bus-input"
+                                data-i18n-placeholder="bus.to_ph" placeholder="e.g., Ankola, Goa, Hubli..."
+                                autocomplete="off"
+                                required
+                                oninput="showSuggestions()"
+                                onfocus="showSuggestions()"
+                            />
+                            <div id="toSuggestions" class="bus-suggestions"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="bus-search-btn">🔍 <span data-i18n="bus.search_btn">Search Buses</span></button>
+            </form>
+
+            <!-- QUICK ROUTES -->
+            <div class="bus-quick-routes">
+                <div class="bus-quick-title">🚀 <span data-i18n="bus.popular_routes">Popular Routes from Karwar</span></div>
+                <div class="bus-chips">
+                    <span class="bus-chip" onclick="quickSearch('Ankola')">→ Ankola</span>
+                    <span class="bus-chip" onclick="quickSearch('Goa')">→ Goa</span>
+                    <span class="bus-chip" onclick="quickSearch('Hubli')">→ Hubli</span>
+                    <span class="bus-chip" onclick="quickSearch('Bangalore')">→ Bangalore</span>
+                    <span class="bus-chip" onclick="quickSearch('Mangalore')">→ Mangalore</span>
+                    <span class="bus-chip" onclick="quickSearch('Mudaga')">→ Mudaga</span>
+                    <span class="bus-chip" onclick="quickSearch('Kadawada')">→ Kadawada</span>
+                    <span class="bus-chip" onclick="quickSearch('Sirsi')">→ Sirsi</span>
+                    <span class="bus-chip" onclick="quickSearch('Dandeli')">→ Dandeli</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════ RESULTS PAGE ══════════ -->
+    <div id="resultsPage" style="display:none;">
+        <button class="bus-back-btn" onclick="goBack()">← Back to Search</button>
+
+        <div class="bus-results-header">
+            <div class="bus-route-display">
+                <span id="displayFrom">Karwar</span>
+                <span class="bus-route-arrow">→</span>
+                <span id="displayTo">Ankola</span>
+            </div>
+            <div class="bus-results-count" id="resultsCount">0 buses found</div>
+        </div>
+
+        <div id="busResults"></div>
+    </div>
+
+</div>
+
+{% block extra_css %}
+<style>
+    .bus-page {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 100px 1rem 80px;
+    }
+
+    /* Search Card */
+    .bus-search-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 28px 24px;
+        box-shadow: var(--shadow-md);
+    }
+    .bus-search-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        text-align: center;
+        margin-bottom: 24px;
+    }
+
+    /* Inputs */
+    .bus-route-group { margin-bottom: 16px; }
+    .bus-input-wrap { margin-bottom: 14px; }
+    .bus-input-wrap label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+    }
+    .bus-input {
+        width: 100%;
+        padding: 13px 16px;
+        background: var(--bg-secondary, #f5f5f5);
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        font-size: 1rem;
+        color: var(--text-primary);
+        font-family: 'Poppins', 'Segoe UI', sans-serif;
+        outline: none;
+        transition: all 0.2s;
+    }
+    .bus-input:focus {
+        border-color: #e8440a;
+        box-shadow: 0 0 0 3px rgba(232,68,10,0.12);
+    }
+
+    /* Suggestions */
+    .bus-suggestions {
+        position: absolute;
+        top: 100%;
+        left: 0; right: 0;
+        background: var(--bg-card);
+        border: 2px solid #e8440a;
+        border-top: none;
+        border-radius: 0 0 12px 12px;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 10;
+        display: none;
+        box-shadow: var(--shadow-md);
+    }
+    .bus-sug-item {
+        padding: 11px 16px;
+        cursor: pointer;
+        transition: background 0.15s;
+        font-size: 0.95rem;
+        color: var(--text-primary);
+    }
+    .bus-sug-item:hover {
+        background: rgba(232,68,10,0.1);
+    }
+
+    /* Search Button */
+    .bus-search-btn {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #e8440a, #ff6b35);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        font-family: 'Poppins', 'Segoe UI', sans-serif;
+        cursor: pointer;
+        margin-top: 4px;
+        box-shadow: 0 4px 14px rgba(232,68,10,0.3);
+        transition: all 0.2s;
+    }
+    .bus-search-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(232,68,10,0.4);
+    }
+
+    /* Quick Routes */
+    .bus-quick-routes {
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-color);
+    }
+    .bus-quick-title {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+    .bus-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .bus-chip {
+        padding: 8px 14px;
+        background: var(--bg-secondary, #f5f5f5);
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        color: var(--text-primary);
+    }
+    .bus-chip:hover {
+        background: #e8440a;
+        color: white;
+        border-color: #e8440a;
+    }
+
+    /* Back Button */
+    .bus-back-btn {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        padding: 10px 18px;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        margin-bottom: 16px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--text-primary);
+        box-shadow: var(--shadow-sm);
+        transition: all 0.2s;
+        font-family: 'Poppins', 'Segoe UI', sans-serif;
+    }
+    .bus-back-btn:hover { border-color: #e8440a; color: #e8440a; }
+
+    /* Results Header */
+    .bus-results-header {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 14px;
+        padding: 18px 20px;
+        margin-bottom: 16px;
+        box-shadow: var(--shadow-sm);
+    }
+    .bus-route-display {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 4px;
+    }
+    .bus-route-arrow { color: #e8440a; font-size: 1.3rem; }
+    .bus-results-count { font-size: 0.85rem; color: var(--text-muted); }
+
+    /* Bus Result Cards */
+    .bus-result-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 14px;
+        padding: 18px 20px;
+        margin-bottom: 12px;
+        box-shadow: var(--shadow-sm);
+        transition: all 0.2s;
+    }
+    .bus-result-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        border-color: rgba(232,68,10,0.3);
+    }
+    .bus-result-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+    }
+    .bus-result-route {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 2px;
+    }
+    .bus-result-trips {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+    }
+    .bus-type-badge {
+        background: #e8440a;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+    .bus-times-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .bus-time-pill {
+        background: rgba(232,68,10,0.08);
+        border: 1px solid rgba(232,68,10,0.2);
+        color: #e8440a;
+        padding: 6px 12px;
+        border-radius: 16px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    /* No Results */
+    .bus-no-results {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 14px;
+        padding: 40px 20px;
+        text-align: center;
+        box-shadow: var(--shadow-sm);
+    }
+    .bus-no-results .emoji { font-size: 3rem; margin-bottom: 12px; }
+    .bus-no-results p { color: var(--text-muted); }
+
+    @media (max-width: 480px) {
+        .bus-search-card { padding: 20px 16px; }
+        .bus-search-title { font-size: 1.1rem; }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// ══════════════════════════════════════════════════════════════
+// BUS DATA — local routes and KSRTC long-distance
+// ══════════════════════════════════════════════════════════════
+const busData = [
+    // LONG DISTANCE
+    { from: "Karwar", to: "Ankola", type: "KSRTC", times: ["06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00"] },
+    { from: "Karwar", to: "Kumta", type: "KSRTC", times: ["06:30","08:00","09:30","11:00","12:30","14:00","15:30","17:00","18:30"] },
+    { from: "Karwar", to: "Hubli", type: "KSRTC", times: ["06:00","07:30","09:00","11:00","13:00","15:00","17:00"] },
+    { from: "Karwar", to: "Goa", type: "KSRTC", times: ["06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00"] },
+    { from: "Karwar", to: "Panaji", type: "KSRTC", times: ["06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00"] },
+    { from: "Karwar", to: "Bangalore", type: "KSRTC", times: ["19:00","19:30","20:00","20:30","21:00"] },
+    { from: "Karwar", to: "Mangalore", type: "KSRTC", times: ["06:00","08:00","10:00","12:00","14:00","16:00","18:00"] },
+    { from: "Karwar", to: "Sirsi", type: "KSRTC", times: ["07:00","09:00","11:00","13:00","15:00","17:00"] },
+    { from: "Karwar", to: "Dandeli", type: "KSRTC", times: ["07:30","10:00","12:30","15:00","17:30"] },
+    // LOCAL
+    { from: "Karwar", to: "Mudaga", type: "Local", times: ["07:00","07:45","08:30","09:15","10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:20","15:45","16:30","17:00","18:00","18:30","19:30","20:30"] },
+    { from: "Karwar", to: "Kadawada", type: "Local", times: ["06:30","07:20","08:30","09:00","09:30","10:15","10:45","11:45","12:30","13:00","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30","18:30","19:00","19:45","20:30","21:30"] },
+    { from: "Karwar", to: "Devabaga", type: "Local", times: ["07:00","08:30","10:00","11:30","12:30","14:00","15:15","17:00","18:30","19:30","21:15"] },
+    { from: "Karwar", to: "Mudageri", type: "Local", times: ["06:40","07:20","08:45","10:30","11:45","12:30","14:10","16:15","17:15","18:45"] },
+    { from: "Karwar", to: "Majali Mudageri", type: "Local", times: ["08:00","09:30","11:15","13:30","15:00","18:00","19:45","20:30","21:30"] },
+    { from: "Karwar", to: "Ulaga", type: "Local", times: ["07:30","13:30","15:30","16:30","19:30"] },
+    { from: "Karwar", to: "Todur", type: "Local", times: ["09:00","10:45","13:00","14:30","18:00","21:00"] },
+    { from: "Karwar", to: "Mallapur", type: "Local", times: ["05:50","07:45","08:45","09:45","10:45","11:45","12:45","13:45","15:45","17:15","19:15","19:45"] },
+    { from: "Karwar", to: "Siddha ITI", type: "Local", times: ["06:15","08:00","09:00","10:00","12:00","13:45","14:30","16:30","17:20"] },
+    { from: "Karwar", to: "Majali", type: "Local", times: ["06:50","07:30","08:20","08:45","10:15","10:45","12:00","13:00","14:00","15:15","15:45","16:15","17:15"] },
+    { from: "Karwar", to: "Halaga", type: "Local", times: ["06:30","08:45","11:30","14:00","14:15","16:15"] },
+    { from: "Karwar", to: "Chitakula", type: "Local", times: ["08:00","10:30","11:00","16:30"] },
+    { from: "Karwar", to: "Gajitawada", type: "Local", times: ["07:00","08:20","09:45","10:30","11:45","13:45","17:30"] },
+    { from: "Karwar", to: "Toraibaga", type: "Local", times: ["07:45","17:45"] },
+    { from: "Karwar", to: "Shivaji College", type: "Local", times: ["09:40","16:20"] },
+    { from: "Karwar", to: "Shirva", type: "Local", times: ["07:15","15:00"] },
+    { from: "Karwar", to: "Goyas", type: "Local", times: ["07:30","15:30"] },
+    { from: "Karwar", to: "Ramnath Kothara", type: "Local", times: ["07:00","14:00","17:00"] }
+];
+
+const allLocations = [...new Set(busData.map(b => b.to))].sort();
+
+// ── Suggestions ──
+function showSuggestions() {
+    const input = document.getElementById('toInput');
+    const sugDiv = document.getElementById('toSuggestions');
+    const q = input.value.toLowerCase().trim();
+    if (!q) { sugDiv.style.display = 'none'; return; }
+    const filtered = allLocations.filter(loc => loc.toLowerCase().includes(q));
+    if (!filtered.length) { sugDiv.style.display = 'none'; return; }
+    sugDiv.innerHTML = filtered.map(loc =>
+        `<div class="bus-sug-item" onclick="selectLoc('${loc}')">${loc}</div>`
+    ).join('');
+    sugDiv.style.display = 'block';
+}
+
+function selectLoc(loc) {
+    document.getElementById('toInput').value = loc;
+    document.getElementById('toSuggestions').style.display = 'none';
+}
+
+// ── Quick Search ──
+function quickSearch(to) {
+    document.getElementById('toInput').value = to;
+    document.getElementById('searchForm').dispatchEvent(new Event('submit'));
+}
+
+// ── Search ──
+function searchBuses(event) {
+    event.preventDefault();
+    const from = document.getElementById('fromInput').value.trim();
+    const to = document.getElementById('toInput').value.trim();
+    const results = busData.filter(bus =>
+        bus.from.toLowerCase().includes(from.toLowerCase()) &&
+        bus.to.toLowerCase().includes(to.toLowerCase())
+    );
+    document.getElementById('displayFrom').textContent = from;
+    document.getElementById('displayTo').textContent = to;
+    document.getElementById('resultsCount').textContent = `${results.length} ${results.length === 1 ? 'route' : 'routes'} found`;
+    renderResults(results);
+    document.getElementById('searchPage').style.display = 'none';
+    document.getElementById('resultsPage').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Render ──
+function renderResults(results) {
+    const c = document.getElementById('busResults');
+    if (!results.length) {
+        const noMsg = (window.karwarianI18n && window.karwarianI18n.t('bus.no_results')) || 'No buses found for this route. Try a different destination.';
+        c.innerHTML = `<div class="bus-no-results"><div class="emoji">😔</div><p>${noMsg}</p></div>`;
+        return;
+    }
+    c.innerHTML = results.map(bus => {
+        const timesHTML = bus.times.map(t => {
+            const [h, m] = t.split(':').map(Number);
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            const h12 = h % 12 || 12;
+            return `<span class="bus-time-pill">${h12}:${String(m).padStart(2,'0')} ${ampm}</span>`;
+        }).join('');
+        return `
+            <div class="bus-result-card">
+                <div class="bus-result-top">
+                    <div>
+                        <div class="bus-result-route">${bus.from} → ${bus.to}</div>
+                        <div class="bus-result-trips">${bus.times.length} trips available</div>
+                    </div>
+                    <span class="bus-type-badge">${bus.type}</span>
+                </div>
+                <div class="bus-times-list">${timesHTML}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+// ── Go Back ──
+function goBack() {
+    document.getElementById('searchPage').style.display = 'block';
+    document.getElementById('resultsPage').style.display = 'none';
+}
+
+// Hide suggestions on outside click
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.bus-input-wrap')) {
+        document.getElementById('toSuggestions').style.display = 'none';
+    }
+});
+</script>
+{% endblock %}
+
+{% endblock %}

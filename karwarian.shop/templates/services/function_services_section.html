@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ segment_config.title }} - Function Services{% endblock %}
+
+{% block extra_css %}
+<style>
+.fs-page-content {
+    padding-top: 90px;
+}
+.fs-sub-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.25rem;
+}
+.fs-sub-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--card-radius);
+    padding: 1.75rem 1.25rem;
+    text-align: center;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+    display: block;
+}
+.fs-sub-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-md);
+    border-color: #ba68c8;
+}
+.fs-sub-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(123, 31, 162, 0.12);
+    color: #7b1fa2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 1.4rem;
+}
+.fs-sub-card h4 { font-weight: 700; font-size: 1.1rem; margin-bottom: 0.35rem; color: var(--text-primary); }
+.fs-sub-card p { font-size: 0.85rem; color: var(--text-secondary); margin: 0; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="py-5 fs-page-content">
+    <div class="container">
+        <div class="fs-sub-grid">
+            {% for item in items %}
+            <a href="{% url 'services:function_listings' segment item.slug %}" class="fs-sub-card">
+                <div class="fs-sub-icon">
+                    <i class="fas {{ item.icon }}"></i>
+                </div>
+                {% if segment == 'decoration' %}
+                <h4 data-i18n="fs.deco.{{ item.slug }}.title">{{ item.title }}</h4>
+                <p data-i18n="fs.deco.{{ item.slug }}.desc">{{ item.description }}</p>
+                {% elif segment == 'catering' %}
+                <h4 data-i18n="fs.cater.{{ item.slug }}.title">{{ item.title }}</h4>
+                <p data-i18n="fs.cater.{{ item.slug }}.desc">{{ item.description }}</p>
+                {% else %}
+                <h4 data-i18n="fs.photo.{{ item.slug }}.title">{{ item.title }}</h4>
+                <p data-i18n="fs.photo.{{ item.slug }}.desc">{{ item.description }}</p>
+                {% endif %}
+            </a>
+            {% endfor %}
+        </div>
+        <div class="mt-4">
+            <a href="{% url 'services:function_hub' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> <span data-i18n="fs.back_hub">Back to Function Services</span>
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
