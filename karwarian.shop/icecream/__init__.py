@@ -1,1 +1,0 @@
-# Anand Ice Cream app
